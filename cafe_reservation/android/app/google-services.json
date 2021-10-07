@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "361366367594",
+    "project_id": "comp523-cafe-reservation",
+    "storage_bucket": "comp523-cafe-reservation.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361366367594:android:f845024f169b29656f4913",
+        "android_client_info": {
+          "package_name": "com.example.cafe_reservation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361366367594-dn30b4dckkkkdbn101633iik0m0f9o3p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNynqQm7db1i2EFvQQZRyzLP1ci2ZGqC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361366367594-dn30b4dckkkkdbn101633iik0m0f9o3p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
