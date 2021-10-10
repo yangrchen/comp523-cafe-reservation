@@ -26,11 +26,10 @@ class _AppState extends State<App> {
       future: _initialization,
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          log('working');
           return MyApp();
         }
 
-        return new CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
     );
   }
@@ -58,7 +57,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -79,46 +77,17 @@ class _HomePageState extends State<HomePage> {
         title: const Text(title),
       ),
       body: Container(
-        margin: const EdgeInsets.only(left: 30.0, top: 30.0),
-        height: 300,
-        child: CafeList(),
+        margin: const EdgeInsets.only(left: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('testing'),
+            Padding(padding: const EdgeInsets.only(top: 35)),
+            CafeList(),
+          ],
+        ),
       ),
     );
-  }
-}
-
-class UserInformation extends StatefulWidget {
-  const UserInformation({Key? key}) : super(key: key);
-
-  @override
-  _UserInformationState createState() => _UserInformationState();
-}
-
-class _UserInformationState extends State<UserInformation> {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: _usersStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Text('Something went wrong');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
-          }
-
-          return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot doc) {
-            Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['name']),
-            );
-          }).toList());
-        });
   }
 }
 
@@ -130,8 +99,10 @@ class CafeList extends StatefulWidget {
 }
 
 class _CafeListState extends State<CafeList> {
-  final Stream<QuerySnapshot> _cafesStream =
-      FirebaseFirestore.instance.collection('cafes').snapshots();
+  final Stream<QuerySnapshot> _cafesStream = FirebaseFirestore.instance
+      .collection('cafes')
+      .orderBy('name')
+      .snapshots();
 
   Widget _buildCafeList(
       BuildContext context, AsyncSnapshot<QuerySnapshot> snap) {
@@ -149,17 +120,37 @@ class _CafeListState extends State<CafeList> {
       scrollDirection: Axis.horizontal,
       itemCount: docs.length,
       itemBuilder: (BuildContext context, int idx) {
-        return Card(
-          child: InkWell(
-            onTap: () {
-              log('tapped:$idx');
-            },
-            child: Ink(
-              child: Text(docs[idx].get('name')),
-              width: 220,
-              color: Colors.red,
+        return Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Container(
+              width: 230,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    log('tapped:$idx');
+                  },
+                ),
+              ),
             ),
-          ),
+            Container(
+              height: 90,
+              width: 200,
+              padding: EdgeInsets.all(15),
+              margin: EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: const Color.fromRGBO(223, 240, 245, 0.3),
+              ),
+              child: Text(
+                docs[idx].get('name'),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
+            ),
+          ],
         );
       },
       separatorBuilder: (BuildContext context, int idx) {
@@ -170,9 +161,12 @@ class _CafeListState extends State<CafeList> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _cafesStream,
-      builder: _buildCafeList,
+    return Container(
+      height: 320,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: _cafesStream,
+        builder: _buildCafeList,
+      ),
     );
   }
 }
