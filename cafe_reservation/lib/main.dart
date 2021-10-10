@@ -72,21 +72,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     const title = 'Test';
+    List<Widget> homePageWidgets = <Widget>[
+      const Text(
+        'Popular Cafes',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      ),
+      CafeList(),
+      const Text(
+        'Cafes',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      )
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text(title),
       ),
-      body: Container(
-        margin: const EdgeInsets.only(left: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('testing'),
-            Padding(padding: const EdgeInsets.only(top: 35)),
-            CafeList(),
-          ],
-        ),
-      ),
+      body: ListView.separated(
+          padding: EdgeInsets.only(left: 30, top: 30),
+          itemBuilder: (BuildContext context, int idx) {
+            return Container(child: homePageWidgets[idx]);
+          },
+          separatorBuilder: (BuildContext context, int idx) {
+            return const SizedBox(height: 35);
+          },
+          itemCount: homePageWidgets.length),
     );
   }
 }
@@ -118,6 +127,7 @@ class _CafeListState extends State<CafeList> {
 
     return ListView.separated(
       scrollDirection: Axis.horizontal,
+      addRepaintBoundaries: false,
       itemCount: docs.length,
       itemBuilder: (BuildContext context, int idx) {
         return Stack(
@@ -154,7 +164,7 @@ class _CafeListState extends State<CafeList> {
         );
       },
       separatorBuilder: (BuildContext context, int idx) {
-        return const SizedBox(width: 25);
+        return const SizedBox(width: 20);
       },
     );
   }
