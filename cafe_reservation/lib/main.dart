@@ -1,6 +1,8 @@
 import 'dart:developer';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:cafe_reservation/cafe_info.dart';
 import 'package:cafe_reservation/database.dart';
+import 'package:cafe_reservation/models/cafe.dart';
 import 'package:firebase_core/firebase_core.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -120,11 +122,12 @@ class _CafeListState extends State<CafeList> {
     }
 
     final docs = snap.data!.docs;
+    final cafes = docs.map((doc) => Cafe.fromDoc(doc)).toList();
 
     return ListView.separated(
       scrollDirection: Axis.horizontal,
       addRepaintBoundaries: false,
-      itemCount: docs.length,
+      itemCount: cafes.length,
       itemBuilder: (BuildContext context, int idx) {
         return Stack(
           alignment: AlignmentDirectional.bottomCenter,
@@ -139,6 +142,12 @@ class _CafeListState extends State<CafeList> {
                   onTap: () {
                     log('tapped:$idx');
                     // log(docs[idx].id); USE THIS TO NAVIGATGE TO NEXT PAGE
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CafeInfo(cafe: cafes[idx]),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -153,7 +162,7 @@ class _CafeListState extends State<CafeList> {
                 color: const Color.fromRGBO(223, 240, 245, 0.3),
               ),
               child: Text(
-                docs[idx].get('name'),
+                cafes[idx].name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ),
