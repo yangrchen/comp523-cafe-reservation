@@ -1,5 +1,6 @@
 import 'dart:developer';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:cafe_reservation/database.dart';
 import 'package:firebase_core/firebase_core.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -77,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         'Popular Cafes',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
       ),
-      CafeList(),
+      const CafeList(),
       const Text(
         'Cafes',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
@@ -108,11 +109,6 @@ class CafeList extends StatefulWidget {
 }
 
 class _CafeListState extends State<CafeList> {
-  final Stream<QuerySnapshot> _cafesStream = FirebaseFirestore.instance
-      .collection('cafes')
-      .orderBy('name')
-      .snapshots();
-
   Widget _buildCafeList(
       BuildContext context, AsyncSnapshot<QuerySnapshot> snap) {
     if (snap.hasError) {
@@ -142,6 +138,7 @@ class _CafeListState extends State<CafeList> {
                 child: InkWell(
                   onTap: () {
                     log('tapped:$idx');
+                    // log(docs[idx].id); USE THIS TO NAVIGATGE TO NEXT PAGE
                   },
                 ),
               ),
@@ -174,7 +171,7 @@ class _CafeListState extends State<CafeList> {
     return Container(
       height: 320,
       child: StreamBuilder<QuerySnapshot>(
-        stream: _cafesStream,
+        stream: Database.readCafes(),
         builder: _buildCafeList,
       ),
     );
