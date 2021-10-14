@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/cafe.dart';
+
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class Database {
@@ -13,22 +15,26 @@ class Database {
     return notesItemCollection.orderBy('name').snapshots();
   }
 
-  static Future<void> updateCafe({
-    required String name,
-    required String address,
-    required String docId,
-  }) async {
+  static Future<Cafe> readCafe({required String docId}) async {
     DocumentReference documentReferencer =
         _firestore.collection('cafes').doc(docId);
+    DocumentSnapshot doc = await documentReferencer.get();
+    return Cafe.fromDoc(doc);
+  }
+
+  static Future<void> updateCafe({required Cafe cafe}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('cafes').doc(cafe.id);
 
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
-      "address": address,
+      "name": cafe.name,
+      "address": cafe.address,
+      'tables': cafe.tables.map((table) => table.toMap()).toList(),
     };
     await documentReferencer
         .update(data)
         .whenComplete(() => log("Note item updated in the database"))
-        .catchError((e) => log(e));
+        .catchError((e) => log(e.toString()));
   }
 
   static Future<void> addItem({
