@@ -1,9 +1,5 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'database.dart';
 import 'models/cafe.dart';
 
 class CafeInfo extends StatefulWidget {

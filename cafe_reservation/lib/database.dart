@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -25,8 +27,8 @@ class Database {
     };
     await documentReferencer
         .update(data)
-        .whenComplete(() => print("Note item updated in the database"))
-        .catchError((e) => print(e));
+        .whenComplete(() => log("Note item updated in the database"))
+        .catchError((e) => log(e));
   }
 
   static Future<void> addItem({
@@ -42,8 +44,8 @@ class Database {
 
     await documentReferencer
         .set(data)
-        .whenComplete(() => print("Note item added to the database"))
-        .catchError((e) => print(e));
+        .whenComplete(() => log("Note item added to the database"))
+        .catchError((e) => log(e));
   }
 
   static Future<void> deleteItem({
@@ -54,8 +56,8 @@ class Database {
 
     await documentReferencer
         .delete()
-        .whenComplete(() => print('Note item deleted from the database'))
-        .catchError((e) => print(e));
+        .whenComplete(() => log('Note item deleted from the database'))
+        .catchError((e) => log(e));
   }
   // static Future<void> addItem({
   //   required String title,
