@@ -1,5 +1,6 @@
 import 'package:cafe_reservation/pages/cafe_admin.dart';
 import 'package:cafe_reservation/pages/home_page.dart';
+import 'package:cafe_reservation/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,7 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             title: 'Cafe Reservation System',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              primarySwatch: Utils.carolinaBlue,
             ),
             home: Scaffold(
               body: _widgetOptions.elementAt(_selectedIndex),
