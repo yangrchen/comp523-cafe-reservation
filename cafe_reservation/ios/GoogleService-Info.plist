@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>361366367594-q72vi08uifsjmm0bk89u550bq6ebfg7a.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.361366367594-q72vi08uifsjmm0bk89u550bq6ebfg7a</string>
+	<key>API_KEY</key>
+	<string>AIzaSyANyktdRJ06bAs_nDITlwBOeXiSGF2Zuao</string>
+	<key>GCM_SENDER_ID</key>
+	<string>361366367594</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.cafeReservation</string>
+	<key>PROJECT_ID</key>
+	<string>comp523-cafe-reservation</string>
+	<key>STORAGE_BUCKET</key>
+	<string>comp523-cafe-reservation.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:361366367594:ios:eadfe1e20c7b12cb6f4913</string>
+</dict>
+</plist>
