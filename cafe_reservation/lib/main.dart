@@ -32,40 +32,38 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _initialization,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Cafe Reservation System',
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSwatch(
-                  primarySwatch: Utils.createMaterialColor(
-                    Color(0xFFA0C8ED),
+      future: _initialization,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Cafe Reservation System',
+            theme: ThemeData(
+              primarySwatch: Utils.carolinaBlue,
+            ),
+            home: Scaffold(
+              body: _widgetOptions.elementAt(_selectedIndex),
+              bottomNavigationBar: BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
                   ),
-                ),
-                primaryColor: Color(0xFFA0C8ED),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.business),
+                    label: 'Cafe Admin',
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Utils.carolinaBlue,
+                onTap: _onItemTapped,
               ),
-              home: Scaffold(
-                body: _widgetOptions.elementAt(_selectedIndex),
-                bottomNavigationBar: BottomNavigationBar(
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.business),
-                      label: 'Cafe Admin',
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  onTap: _onItemTapped,
-                ),
-              ),
-            );
-          }
-          return const CircularProgressIndicator();
-        });
+            ),
+          );
+        }
+        return const CircularProgressIndicator();
+        }
+    );
   }
 }
+
