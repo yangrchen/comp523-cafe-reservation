@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
+import '../utils.dart';
 import 'table.dart';
 
 class Cafe {
@@ -18,5 +20,23 @@ class Cafe {
     tables =
         data['tables']?.map((table) => Table.fromMap(table)).toList() ?? [];
     id = doc.id;
+  }
+
+  Map<String, List<Table>> checkAvailability(DateTime date, int partySize) {
+    DateFormat f = DateFormat('yyyy-MM-dd');
+    String dateString = f.format(date);
+
+    Defaultdict<String, List<Table>> r =
+        Defaultdict<String, List<Table>>(() => []);
+    for (Table table in tables) {
+      if (table.size < partySize) continue;
+
+      Map<String, bool> times = table.dates[dateString]!;
+      times.forEach((time, isAvailable) {
+        if (isAvailable) r[time].add(table);
+      });
+    }
+
+    return r;
   }
 }

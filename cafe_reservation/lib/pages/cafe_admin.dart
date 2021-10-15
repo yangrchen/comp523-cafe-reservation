@@ -35,7 +35,7 @@ class _CafeAdminState extends State<CafeAdmin> {
     for (int i = 0; i < 31; i++) {
       dates[f.format(now.add(Duration(days: i)))] = times;
     }
-    Future<Cafe> cafe = Database.readCafe(docId: 'q7dixS54Ji8ILgKOH258');
+    Future<Cafe> cafe = Database.readCafe(docId: '6Gd6yngqVNG6OKyLcEN0');
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -85,7 +85,15 @@ class _CafeAdminState extends State<CafeAdmin> {
                 ),
                 Container(
                   margin: EdgeInsets.all(25),
-                  child: Text(snap.data.tables.toString()),
+                  child: Text(
+                    cafe
+                        .checkAvailability(DateTime.now(), 4)
+                        .toString(), //FOR TESTING
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(25),
+                  child: Text(cafe.tables.toString()),
                 ),
               ],
             ),
