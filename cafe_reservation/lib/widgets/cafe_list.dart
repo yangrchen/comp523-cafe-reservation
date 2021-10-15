@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:cafe_reservation/models/cafe.dart';
+import 'package:cafe_reservation/widgets/cafe_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../cafe_info.dart';
 import '../database.dart';
 
 class CafeList extends StatefulWidget {
@@ -44,8 +41,6 @@ class _CafeListState extends State<CafeList> {
                 ),
                 child: InkWell(
                   onTap: () {
-                    log('tapped:$idx');
-                    // log(docs[idx].id); USE THIS TO NAVIGATGE TO NEXT PAGE
                     Navigator.push(
                       context,
                       MaterialPageRoute(
