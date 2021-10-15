@@ -61,9 +61,9 @@ class _AppState extends State<App> {
             ),
           );
         }
-
         return const CircularProgressIndicator();
-      },
+        }
     );
   }
 }
+
