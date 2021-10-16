@@ -9,7 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget _searchBar(BuildContext context) {
+  Widget _buildSearchBar(BuildContext context) {
     return Container(
       width: 100,
       color: Colors.blue,
@@ -29,9 +29,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    const title = 'Test';
+    const title = 'Cafe Reservation';
     List<Widget> homePageWidgets = <Widget>[
-      _searchBar(context),
+      _buildSearchBar(context),
       const Text(
         'Popular Cafes',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
@@ -52,14 +52,6 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(20),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              showSearch(context: context, delegate: CafeSearch());
-            },
-            icon: Icon(Icons.search),
-          ),
-        ],
       ),
       body: ListView.separated(
           padding: EdgeInsets.only(left: 30, top: 30),
