@@ -1,6 +1,7 @@
 import 'package:cafe_reservation/widgets/cafe_list.dart';
 import 'package:cafe_reservation/widgets/cafe_search.dart';
 import 'package:flutter/material.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -12,15 +13,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearchBar(BuildContext context) {
     return Container(
       width: 100,
-      color: Colors.blue,
       child: Row(
         children: <Widget>[
-          Icon(Icons.search),
+          const Icon(Icons.search),
           GestureDetector(
             onTap: () {
-              // log('tapped');
+              showSearch(context: context, delegate: CafeSearch());
             },
-            child: Text('Search'),
+            child: const Text('Search'),
           ),
         ],
       ),
@@ -46,8 +46,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(title),
         elevation: 0,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.black,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
