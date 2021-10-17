@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
-import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:cafe_reservation/models/table.dart' as t;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -61,7 +59,6 @@ class _CafeAdminState extends State<CafeAdmin> {
                           setState(() {
                             dropdownValue = newValue!;
                           });
-                          print(dropdownValue);
                         },
                         items: [1, 2, 3, 4, 5, 6]
                             .map((num) => DropdownMenuItem(
@@ -73,7 +70,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                       ElevatedButton(
                         child: Text('Click Here'),
                         onPressed: () {
-                          cafe.tables.add(T.Table(dropdownValue, dates));
+                          cafe.tables.add(t.Table(dropdownValue, dates));
                           Database.updateCafe(cafe: cafe);
                           setState(() {
                             cafe;

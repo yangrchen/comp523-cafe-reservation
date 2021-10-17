@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class Table {
   late int size;
   late Map<String, Map<String, bool>> dates;
