@@ -3,10 +3,12 @@ import 'dart:developer';
 class Table {
   late int size;
   late Map<String, Map<String, bool>> dates;
-  Table(this.size, this.dates);
+  late int id;
+  Table(this.id, this.size, this.dates);
 
   Table.fromMap(Map<String, dynamic> map) {
-    size = map['size'];
+    size = map['size'] ?? 0;
+    id = map['id'] ?? -1;
     var d = Map<String, dynamic>.from(map['dates']);
     dates = {};
     d.forEach((key, value) {
@@ -17,12 +19,15 @@ class Table {
     return {
       'size': size,
       'dates': dates,
+      'id': id,
     };
   }
 
   @override
   toString() {
-    return 'Table of size ' +
+    return 'Table ' +
+        id.toString() +
+        ' of size ' +
         size.toString() +
         ' with ' +
         dates.length.toString() +

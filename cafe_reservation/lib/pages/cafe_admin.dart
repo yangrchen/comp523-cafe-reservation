@@ -15,6 +15,21 @@ class CafeAdmin extends StatefulWidget {
 
 class _CafeAdminState extends State<CafeAdmin> {
   int dropdownValue = 1;
+  String? currentTables;
+  List<Widget> _createTimeButtons(Map<String, List<T.Table>> times) {
+    List<Widget> r = [];
+    times.forEach((key, value) {
+      r.add(ElevatedButton(
+          onPressed: () {
+            setState(() {
+              currentTables = value.toString();
+            });
+          },
+          child: Text(key)));
+    });
+
+    return r;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +62,8 @@ class _CafeAdminState extends State<CafeAdmin> {
             return CircularProgressIndicator();
           }
           Cafe cafe = snap.data;
+          Map<String, List<T.Table>> times =
+              cafe.checkAvailability(DateTime.now(), 1);
           return Center(
             child: Column(
               children: <Widget>[
@@ -54,14 +71,13 @@ class _CafeAdminState extends State<CafeAdmin> {
                   margin: EdgeInsets.all(25),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       DropdownButton(
                         value: dropdownValue,
                         onChanged: (int? newValue) {
                           setState(() {
                             dropdownValue = newValue!;
                           });
-                          print(dropdownValue);
                         },
                         items: [1, 2, 3, 4, 5, 6]
                             .map((num) => DropdownMenuItem(
@@ -73,7 +89,8 @@ class _CafeAdminState extends State<CafeAdmin> {
                       ElevatedButton(
                         child: Text('Click Here'),
                         onPressed: () {
-                          cafe.tables.add(T.Table(dropdownValue, dates));
+                          cafe.tables.add(T.Table(
+                              cafe.tables.length, dropdownValue, dates));
                           Database.updateCafe(cafe: cafe);
                           setState(() {
                             cafe;
@@ -85,12 +102,19 @@ class _CafeAdminState extends State<CafeAdmin> {
                 ),
                 Container(
                   margin: EdgeInsets.all(25),
-                  child: Text(
-                    cafe
-                        .checkAvailability(DateTime.now(), 4)
-                        .toString(), //FOR TESTING
+                  child: Wrap(
+                    spacing: 10, children: _createTimeButtons(times),
+
+                    // Text(
+                    //   //FOR TESTING
+                    //   cafe.checkAvailability(DateTime.now(), 4).toString(),
+                    // ),
                   ),
                 ),
+                if (currentTables != null)
+                  Container(
+                      margin: EdgeInsets.all(25),
+                      child: Text(currentTables.toString())),
                 Container(
                   margin: EdgeInsets.all(25),
                   child: Text(cafe.tables.toString()),

@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:cafe_reservation/models/reservation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -38,5 +37,12 @@ class Cafe {
     }
 
     return r;
+  }
+
+  Reservation createReservation(
+      String date, String time, List<Table> tables, int size) {
+    tables.sort((a, b) => a.size.compareTo(b.size));
+    return Reservation('userid', this, tables.elementAt(0).id, size, date, time,
+        (int.parse(time) + 1).toString());
   }
 }
