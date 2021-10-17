@@ -19,8 +19,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
 
   void _onItemTapped(int index) {
@@ -39,7 +37,8 @@ class _AppState extends State<App> {
               debugShowCheckedModeBanner: false,
               title: 'Cafe Reservation System',
               theme: ThemeData(
-                primarySwatch: Utils.createMaterialColor(Color(0xFFA0C8ED)),
+                primarySwatch:
+                    Utils.createMaterialColor(const Color(0xFFA0C8ED)),
               ),
               home: Scaffold(
                 body: _widgetOptions.elementAt(_selectedIndex),

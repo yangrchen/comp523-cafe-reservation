@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       body: ListView.separated(
-          padding: EdgeInsets.only(left: 30, top: 30),
+          padding: const EdgeInsets.only(left: 30, top: 30),
           itemBuilder: (BuildContext context, int idx) {
             return Container(child: homePageWidgets[idx]);
           },
