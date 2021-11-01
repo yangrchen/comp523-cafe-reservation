@@ -1,7 +1,6 @@
 import 'package:cafe_reservation/models/cafe.dart';
 import 'package:cafe_reservation/widgets/cafe_info_template.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CafeInfo extends StatefulWidget {
   final Cafe cafe;
@@ -12,14 +11,18 @@ class CafeInfo extends StatefulWidget {
 }
 
 class _CafeInfoState extends State<CafeInfo> {
-  bool _isButtonEnabled = false;
   DateTime selectedDate = DateTime.now();
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
-  List<String> test = <String>['hello'];
   int selectedPeople = 1;
-
+  String _selectedTime = '0';
+  List<String> _availableTimes = [];
   @override
   Widget build(BuildContext context) {
+    _availableTimes = widget.cafe
+        .checkAvailability(selectedDate, selectedPeople)
+        .keys
+        .toList();
+    _availableTimes.sort((a, b) => (int.parse(a)).compareTo(int.parse(b)));
     return CafeInfoTemplate(
       children: <Widget>[
         Text(
@@ -68,7 +71,7 @@ class _CafeInfoState extends State<CafeInfo> {
         const SizedBox(
           height: 15,
         ),
-        _buildTimeGrid(),
+        _buildTimeGrid(times: _availableTimes),
         const SizedBox(
           height: 15,
         ),
@@ -157,34 +160,50 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildTimeGrid() {
+  Widget _buildTimeGrid({required List<String> times}) {
     return Container(
       alignment: AlignmentDirectional.center,
-      child: GridView.count(
-        shrinkWrap: true,
-        crossAxisCount: 4,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 17,
-        childAspectRatio: 2.0,
-        children:
-            List.generate(10, (index) => _buildTimeButton(index.toString())),
-      ),
+      child: times.isNotEmpty
+          ? GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 17,
+              childAspectRatio: 2.0,
+              children: List.generate(
+                times.length,
+                (i) => _buildTimeButton(times[i].toString()),
+              ),
+            )
+          : const Text('No times available for selected options.'),
     );
   }
 
   Widget _buildTimeButton(String time) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        setState(() {
+          _selectedTime = time;
+        });
+      },
+      style: time == _selectedTime
+          ? ElevatedButton.styleFrom(primary: Colors.blue)
+          : null,
       child: SizedBox(
-        width: 80,
-        child: Text(time),
+        child: Center(
+          child: Text(
+            time,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildReserveButton() {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed:
+          _selectedTime != '0' && _availableTimes.isNotEmpty ? () {} : null,
       child: Container(
         alignment: AlignmentDirectional.center,
         child: const Text(
