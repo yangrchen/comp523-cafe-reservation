@@ -39,6 +39,7 @@ class _AppState extends State<App> {
               theme: ThemeData(
                 primarySwatch:
                     Utils.createMaterialColor(const Color(0xFFA0C8ED)),
+                dividerColor: Colors.grey,
               ),
               home: Scaffold(
                 body: _widgetOptions.elementAt(_selectedIndex),

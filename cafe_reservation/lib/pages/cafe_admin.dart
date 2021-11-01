@@ -37,19 +37,24 @@ class _CafeAdminState extends State<CafeAdmin> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        centerTitle: true,
       ),
       body: FutureBuilder<Cafe>(
         future: cafe,
         builder: (BuildContext context, AsyncSnapshot snap) {
           if (!snap.hasData) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           Cafe cafe = snap.data;
           return Center(
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(25),
+                  margin: const EdgeInsets.all(25),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -68,7 +73,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                             .toList(),
                       ),
                       ElevatedButton(
-                        child: Text('Click Here'),
+                        child: const Text('Click Here'),
                         onPressed: () {
                           cafe.tables.add(t.Table(dropdownValue, dates));
                           Database.updateCafe(cafe: cafe);
@@ -81,7 +86,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.all(25),
+                  margin: const EdgeInsets.all(25),
                   child: Text(
                     cafe
                         .checkAvailability(DateTime.now(), 4)
@@ -89,7 +94,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.all(25),
+                  margin: const EdgeInsets.all(25),
                   child: Text(cafe.tables.toString()),
                 ),
               ],
