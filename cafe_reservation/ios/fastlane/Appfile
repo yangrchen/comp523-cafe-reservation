@@ -1,0 +1,8 @@
+app_identifier("com.example.cafeReservation") # The bundle identifier of your app
+apple_id("yyangc88@gmail.com") # Your Apple email address
+
+itc_team_id("123629433") # App Store Connect Team ID
+team_id("Y9WRFW73S8") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
