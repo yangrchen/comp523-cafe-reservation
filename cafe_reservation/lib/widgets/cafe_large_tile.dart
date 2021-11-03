@@ -38,9 +38,19 @@ class CafeLargeTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             color: const Color.fromRGBO(223, 240, 245, 0.3),
           ),
-          child: Text(
-            cafe.name,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CafeInfo(cafe: cafe),
+                ),
+              );
+            },
+            child: Text(
+              cafe.name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
           ),
         ),
       ],

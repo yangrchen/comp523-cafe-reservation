@@ -29,7 +29,7 @@ class Cafe {
     for (Table table in tables) {
       if (table.size < partySize) continue;
 
-      Map<String, bool> times = table.dates[dateString]!;
+      Map<String, bool> times = table.dates[dateString] ?? <String, bool>{};
       times.forEach((time, isAvailable) {
         if (isAvailable) r[time].add(table);
       });
