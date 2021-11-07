@@ -27,8 +27,3 @@ class Table {
         ' dates.';
   }
 }
-/*
-Table
-size
-dates Map<datetime, Map<timeslot, boolean>>
-*/
