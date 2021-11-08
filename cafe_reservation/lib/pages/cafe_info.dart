@@ -139,7 +139,7 @@ class _CafeInfoState extends State<CafeInfo> {
         items: items.map<DropdownMenuItem<dynamic>>((dynamic val) {
           return DropdownMenuItem<dynamic>(
             value: val,
-            child: Text(val.toString()),
+            child: Text(val.toString(), key: Key('item-$val')),
           );
         }).toList(),
         onChanged: (dynamic selectedVal) {
