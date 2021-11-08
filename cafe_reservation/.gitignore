@@ -50,5 +50,5 @@ ios/*.app.*
 ios/*.ipa
 ios/build/
 
-
-/coverage
+*.zip
+coverage/*
