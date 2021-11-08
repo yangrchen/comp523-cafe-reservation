@@ -49,3 +49,6 @@ app.*.map.json
 ios/*.app.*
 ios/*.ipa
 ios/build/
+
+
+/coverage
