@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cafe_reservation/pages/cafe_admin.dart';
+import 'package:cafe_reservation/pages/current_reservation.dart';
 import 'package:cafe_reservation/pages/home_page.dart';
 import 'package:cafe_reservation/pages/login_page.dart';
 import 'package:cafe_reservation/utils.dart';
@@ -25,7 +26,10 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
+  static const List<Widget> _widgetOptions = <Widget>[
+    HomePage(),
+    CurrentReservationPage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
