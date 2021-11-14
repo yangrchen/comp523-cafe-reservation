@@ -20,11 +20,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    LoginPage(),
-    HomePage(),
-    CafeAdmin()
-  ];
+  static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
 
   void _onItemTapped(int index) {
     setState(() {
