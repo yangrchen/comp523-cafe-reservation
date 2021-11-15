@@ -1,9 +1,14 @@
 import 'dart:developer';
-// ignore: import_of_legacy_library_into_null_safe
+
 import 'package:firebase_core/firebase_core.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cafe_reservation/pages/cafe_admin.dart';
+import 'package:cafe_reservation/pages/home_page.dart';
+import 'package:cafe_reservation/pages/login_page.dart';
+import 'package:cafe_reservation/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cafe_reservation/models/user.dart' as U;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,163 +24,89 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  int _selectedIndex = 0;
+  bool _authenticated = false;
+  static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _changeAuthentication(bool isAuthenticated) {
+    setState(() {
+      _authenticated = isAuthenticated;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _initialization,
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return MyApp();
-        }
+        future: _initialization,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text("Error: ${snapshot.error}"),
+              ),
+            );
+          }
 
-        return const CircularProgressIndicator();
-      },
-    );
+          if (snapshot.connectionState == ConnectionState.done) {
+            return StreamBuilder(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    User? user = snapshot.data as User?;
+                    log("${user}");
+                    if (user == null) {
+                      return Provider<U.User>(
+                        create: (context) => U.User.blank(),
+                        child: _buildMaterialApp(isAuthenticated: false),
+                      );
+                    } else {
+                      return Provider<U.User>(
+                        create: (context) => U.User(user.uid, user.email!),
+                        child: _buildMaterialApp(isAuthenticated: true),
+                      );
+                    }
+                  }
+                  return const CircularProgressIndicator();
+                });
+          }
+          return const CircularProgressIndicator();
+        });
   }
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildMaterialApp({required bool isAuthenticated}) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Cafe Reservation System',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Utils.createMaterialColor(const Color(0xFFA0C8ED)),
+        dividerColor: Colors.grey,
       ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    const title = 'Test';
-    List<Widget> homePageWidgets = <Widget>[
-      const Text(
-        'Popular Cafes',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      CafeList(),
-      const Text(
-        'Cafes',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      )
-    ];
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(title),
-      ),
-      body: ListView.separated(
-          padding: EdgeInsets.only(left: 30, top: 30),
-          itemBuilder: (BuildContext context, int idx) {
-            return Container(child: homePageWidgets[idx]);
-          },
-          separatorBuilder: (BuildContext context, int idx) {
-            return const SizedBox(height: 35);
-          },
-          itemCount: homePageWidgets.length),
-    );
-  }
-}
-
-class CafeList extends StatefulWidget {
-  const CafeList({Key? key}) : super(key: key);
-
-  @override
-  _CafeListState createState() => _CafeListState();
-}
-
-class _CafeListState extends State<CafeList> {
-  final Stream<QuerySnapshot> _cafesStream = FirebaseFirestore.instance
-      .collection('cafes')
-      .orderBy('name')
-      .snapshots();
-
-  Widget _buildCafeList(
-      BuildContext context, AsyncSnapshot<QuerySnapshot> snap) {
-    if (snap.hasError) {
-      return const Text('Something went wrong');
-    }
-
-    if (snap.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
-    }
-
-    final docs = snap.data!.docs;
-
-    return ListView.separated(
-      scrollDirection: Axis.horizontal,
-      addRepaintBoundaries: false,
-      itemCount: docs.length,
-      itemBuilder: (BuildContext context, int idx) {
-        return Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: <Widget>[
-            Container(
-              width: 230,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    log('tapped:$idx');
-                  },
-                ),
-              ),
-            ),
-            Container(
-              height: 90,
-              width: 200,
-              padding: EdgeInsets.all(15),
-              margin: EdgeInsets.only(bottom: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: const Color.fromRGBO(223, 240, 245, 0.3),
-              ),
-              child: Text(
-                docs[idx].get('name'),
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-            ),
-          ],
-        );
-      },
-      separatorBuilder: (BuildContext context, int idx) {
-        return const SizedBox(width: 20);
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 320,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: _cafesStream,
-        builder: _buildCafeList,
+      home: Scaffold(
+        body: isAuthenticated
+            ? _widgetOptions.elementAt(_selectedIndex)
+            : LoginPage(),
+        bottomNavigationBar: isAuthenticated
+            ? BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.business),
+                    label: 'Cafe Admin',
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                onTap: _onItemTapped,
+              )
+            : null,
       ),
     );
   }
