@@ -7,6 +7,8 @@ import 'package:cafe_reservation/pages/home_page.dart';
 import 'package:cafe_reservation/pages/login_page.dart';
 import 'package:cafe_reservation/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cafe_reservation/models/user.dart' as U;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,9 +61,15 @@ class _AppState extends State<App> {
                     User? user = snapshot.data as User?;
                     log("${user}");
                     if (user == null) {
-                      return _buildMaterialApp(isAuthenticated: false);
+                      return Provider<U.User>(
+                        create: (context) => U.User.blank(),
+                        child: _buildMaterialApp(isAuthenticated: false),
+                      );
                     } else {
-                      return _buildMaterialApp(isAuthenticated: true);
+                      return Provider<U.User>(
+                        create: (context) => U.User(user.uid, user.email!),
+                        child: _buildMaterialApp(isAuthenticated: true),
+                      );
                     }
                   }
                   return const CircularProgressIndicator();
