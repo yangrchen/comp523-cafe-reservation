@@ -34,12 +34,6 @@ class _AppState extends State<App> {
     });
   }
 
-  void _changeAuthentication(bool isAuthenticated) {
-    setState(() {
-      _authenticated = isAuthenticated;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
