@@ -8,7 +8,7 @@ class Cafe {
   late String name;
   late String address;
   late String id;
-  late List tables;
+  late List<Table> tables;
 
   Cafe(this.name, this.address, this.id);
   Cafe.fromDoc(DocumentSnapshot doc) {
