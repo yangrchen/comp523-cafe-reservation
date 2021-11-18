@@ -1,6 +1,14 @@
+import 'dart:developer';
+
+import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
+import 'package:cafe_reservation/models/reservation.dart';
+import 'package:cafe_reservation/models/user.dart';
 import 'package:cafe_reservation/widgets/cafe_info_template.dart';
 import 'package:flutter/material.dart';
+import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CafeInfo extends StatefulWidget {
   final Cafe cafe;
@@ -11,18 +19,16 @@ class CafeInfo extends StatefulWidget {
 }
 
 class _CafeInfoState extends State<CafeInfo> {
-  DateTime selectedDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
-  int selectedPeople = 1;
+  int _selectedPeople = 1;
   String _selectedTime = '0';
-  List<String> _availableTimes = [];
+  T.Table? _selectedTable = null;
+  Map<String, List<T.Table>> _availableTimes = {};
   @override
   Widget build(BuildContext context) {
-    _availableTimes = widget.cafe
-        .checkAvailability(selectedDate, selectedPeople)
-        .keys
-        .toList();
-    _availableTimes.sort((a, b) => (int.parse(a)).compareTo(int.parse(b)));
+    _availableTimes =
+        widget.cafe.checkAvailability(_selectedDate, _selectedPeople);
     return CafeInfoTemplate(
       children: <Widget>[
         Text(
@@ -60,7 +66,7 @@ class _CafeInfoState extends State<CafeInfo> {
               Expanded(
                 child: GestureDetector(
                   child: Text(
-                    '${selectedDate.toLocal()}'.split(' ')[0],
+                    '${_selectedDate.toLocal()}'.split(' ')[0],
                   ),
                   onTap: () => _selectDate(context),
                 ),
@@ -71,11 +77,11 @@ class _CafeInfoState extends State<CafeInfo> {
         const SizedBox(
           height: 15,
         ),
-        _buildTimeGrid(times: _availableTimes),
+        _buildTimeGrid(timemap: _availableTimes),
         const SizedBox(
           height: 15,
         ),
-        _buildReserveButton(),
+        _buildReserveButton(context, widget.cafe),
       ],
     );
   }
@@ -129,7 +135,7 @@ class _CafeInfoState extends State<CafeInfo> {
           switch (type) {
             case 'numPeople':
               {
-                return selectedPeople;
+                return _selectedPeople;
               }
               break;
           }
@@ -147,7 +153,7 @@ class _CafeInfoState extends State<CafeInfo> {
             case 'numPeople':
               {
                 setState(() {
-                  selectedPeople = selectedVal;
+                  _selectedPeople = selectedVal;
                 });
               }
               break;
@@ -160,10 +166,12 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildTimeGrid({required List<String> times}) {
+  Widget _buildTimeGrid({required Map<String, List<T.Table>> timemap}) {
+    List<String> times = timemap.keys.toList();
+    times.sort();
     return Container(
       alignment: AlignmentDirectional.center,
-      child: times.isNotEmpty
+      child: timemap.isNotEmpty
           ? GridView.count(
               shrinkWrap: true,
               crossAxisCount: 4,
@@ -171,18 +179,21 @@ class _CafeInfoState extends State<CafeInfo> {
               mainAxisSpacing: 17,
               childAspectRatio: 2.0,
               children: List.generate(
-                times.length,
-                (i) => _buildTimeButton(times[i].toString()),
+                timemap.length,
+                (i) => _buildTimeButton(times[i], timemap[times[i]]!),
               ),
             )
           : const Text('No times available for selected options.'),
     );
   }
 
-  Widget _buildTimeButton(String time) {
+  Widget _buildTimeButton(String time, List<T.Table> tables) {
+    tables.sort((a, b) => a.size.compareTo(b.size));
     return ElevatedButton(
       onPressed: () {
+        log(tables.toString());
         setState(() {
+          _selectedTable = tables[0];
           _selectedTime = time;
         });
       },
@@ -200,10 +211,27 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildReserveButton() {
+  Widget _buildReserveButton(BuildContext context, Cafe cafe) {
+    var user = Provider.of<User>(context);
+    var f = DateFormat('yyyy-MM-dd');
+
     return ElevatedButton(
-      onPressed:
-          _selectedTime != '0' && _availableTimes.isNotEmpty ? () {} : null,
+      onPressed: _selectedTime != '0' && _availableTimes.isNotEmpty
+          ? () {
+              Reservation newRes = Reservation(
+                  user.uid,
+                  cafe,
+                  [_selectedTable!.tid],
+                  _selectedPeople,
+                  f.format(_selectedDate),
+                  _selectedTime,
+                  (int.parse(_selectedTime) + 1).toString());
+              // log(_selectedTable.toString());
+              // log(user.uid);
+              log(newRes.toString());
+              Database.addReservation(res: newRes);
+            }
+          : null,
       child: Container(
         alignment: AlignmentDirectional.center,
         child: const Text(
@@ -217,13 +245,13 @@ class _CafeInfoState extends State<CafeInfo> {
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != selectedDate) {
+    if (picked != null && picked != _selectedDate) {
       setState(() {
-        selectedDate = picked;
+        _selectedDate = picked;
       });
     }
   }

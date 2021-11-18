@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cafe_reservation/models/reservation.dart';
+import 'package:cafe_reservation/models/table.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'models/cafe.dart';
@@ -37,34 +39,64 @@ class Database {
         .catchError((e) => log(e.toString()));
   }
 
-  static Future<void> addItem({
-    required String name,
-    required String address,
-  }) async {
-    DocumentReference documentReferencer = _firestore.collection('cafes').doc();
+  static Future<void> addReservation({required Reservation res}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('reservations').doc();
 
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
-      "address": address,
+      "userid": res.userid,
+      "cafe": res.cafe.id,
+      "tables": res.tables,
+      "size": res.size,
+      "date": res.date,
+      "startTime": res.startTime,
+      "endTime": res.endTime,
     };
-
+    Cafe c = res.cafe;
+    List<Table> tablesToUpdate = [];
+    c.tables.forEach((table) {
+      if (res.tables.contains(table.tid)) {
+        tablesToUpdate.add(table);
+      }
+    });
+    tablesToUpdate.forEach((table) {
+      table.dates[res.date]![res.startTime] = false;
+    });
     await documentReferencer
         .set(data)
-        .whenComplete(() => log("Note item added to the database"))
+        .whenComplete(() => log("Reservation item added to the database"))
         .catchError((e) => log(e));
+    await updateCafe(cafe: c);
   }
 
-  static Future<void> deleteItem({
-    required String docId,
-  }) async {
-    DocumentReference documentReferencer =
-        _firestore.collection('cafes').doc(docId);
+  // static Future<void> addItem({
+  //   required String name,
+  //   required String address,
+  // }) async {
+  //   DocumentReference documentReferencer = _firestore.collection('cafes').doc();
 
-    await documentReferencer
-        .delete()
-        .whenComplete(() => log('Note item deleted from the database'))
-        .catchError((e) => log(e));
-  }
+  //   Map<String, dynamic> data = <String, dynamic>{
+  //     "name": name,
+  //     "address": address,
+  //   };
+
+  //   await documentReferencer
+  //       .set(data)
+  //       .whenComplete(() => log("Note item added to the database"))
+  //       .catchError((e) => log(e));
+  // }
+
+  // static Future<void> deleteItem({
+  //   required String docId,
+  // }) async {
+  //   DocumentReference documentReferencer =
+  //       _firestore.collection('cafes').doc(docId);
+
+  //   await documentReferencer
+  //       .delete()
+  //       .whenComplete(() => log('Note item deleted from the database'))
+  //       .catchError((e) => log(e));
+  // }
   // static Future<void> addItem({
   //   required String title,
   //   required String description,
