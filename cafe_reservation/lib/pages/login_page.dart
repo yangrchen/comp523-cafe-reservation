@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
             Expanded(
               child: Align(
                 alignment: _isRegistering
-                    ? const FractionalOffset(0.5, 0.73)
+                    ? const FractionalOffset(0.5, 0.935)
                     : const FractionalOffset(0.5, 0.95),
                 child: ElevatedButton(
                   onPressed: () async {
@@ -181,25 +181,25 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            if (!_isRegistering) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text("Don't have an account?"),
-                  const SizedBox(width: 5.0),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isRegistering = true;
-                      });
-                    },
-                    child: const Text('Sign Up',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 80.0),
-            ]
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(_isRegistering
+                    ? "Already have an account?"
+                    : "Don't have an account?"),
+                const SizedBox(width: 5.0),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isRegistering = !_isRegistering;
+                    });
+                  },
+                  child: const Text('Sign Up',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 80.0),
           ],
         ),
       ),
