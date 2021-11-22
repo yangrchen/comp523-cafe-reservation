@@ -25,7 +25,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  bool _authenticated = false;
   static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
 
   void _onItemTapped(int index) {
