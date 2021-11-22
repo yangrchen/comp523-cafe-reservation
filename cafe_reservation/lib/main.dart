@@ -100,6 +100,10 @@ class _AppState extends State<App> {
                     icon: Icon(Icons.business),
                     label: 'Cafe Admin',
                   ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.assignment),
+                    label: 'Current Reservation',
+                  ),
                 ],
                 currentIndex: _selectedIndex,
                 onTap: _onItemTapped,
