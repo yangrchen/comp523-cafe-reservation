@@ -30,6 +30,7 @@ class _CafeInfoState extends State<CafeInfo> {
     _availableTimes =
         widget.cafe.checkAvailability(_selectedDate, _selectedPeople);
     return CafeInfoTemplate(
+      hasBackButton: true,
       children: <Widget>[
         Text(
           widget.cafe.name,

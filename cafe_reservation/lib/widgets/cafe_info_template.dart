@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class CafeInfoTemplate extends StatefulWidget {
   final List<Widget> children;
+  final bool hasBackButton;
 
-  const CafeInfoTemplate({Key? key, required this.children}) : super(key: key);
+  const CafeInfoTemplate(
+      {Key? key, required this.children, this.hasBackButton = false})
+      : super(key: key);
 
   @override
   _CafeInfoTemplateState createState() => _CafeInfoTemplateState();
@@ -23,25 +26,28 @@ class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
               height: MediaQuery.of(context).size.height * 0.45,
               color: Theme.of(context).primaryColor,
             ),
-            Positioned(
-              left: 10,
-              top: 50,
-              width: 60,
-              height: 60,
-              child: Container(
-                padding: const EdgeInsets.only(left: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromRGBO(133, 133, 133, 0.4),
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
+            widget.hasBackButton
+                ? Positioned(
+                    left: 10,
+                    top: 50,
+                    width: 60,
+                    height: 60,
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromRGBO(133, 133, 133, 0.4),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios,
+                            color: Colors.white),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  )
+                : Container(),
             Positioned(
               top: 280,
               width: MediaQuery.of(context).size.width,
