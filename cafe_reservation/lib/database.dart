@@ -41,7 +41,7 @@ class Database {
 
   static Future<void> addReservation({required Reservation res}) async {
     DocumentReference documentReferencer =
-        _firestore.collection('reservations').doc();
+        _firestore.collection('reservations').doc(res.userid);
 
     Map<String, dynamic> data = <String, dynamic>{
       "userid": res.userid,
@@ -70,18 +70,26 @@ class Database {
   }
 
   static Future<Reservation?> readReservation({required String userid}) async {
-    QuerySnapshot snap = await _firestore
-        .collection('reservations')
-        .where("userid", isEqualTo: userid)
-        .get();
-    if (snap.docs.isEmpty) {
+    DocumentSnapshot doc =
+        await _firestore.collection('reservations').doc(userid).get();
+    if (!doc.exists) {
       return null;
     }
-    QueryDocumentSnapshot resDoc = snap.docs[0];
-    Map<String, dynamic> data = resDoc.data() as Map<String, dynamic>;
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     Cafe c = await readCafe(docId: data['cafe']);
-    return Reservation.fromDoc(resDoc, c);
-  } // static Future<void> addItem({
+    return Reservation.fromDoc(doc, c);
+  }
+
+  static Future<void> deleteReservation({required String userid}) async {
+    DocumentReference currentReservation =
+        _firestore.collection('reservations').doc(userid);
+    return currentReservation
+        .delete()
+        .then((val) => log('Reservation deleted'))
+        .catchError((e) => log(e));
+  }
+  // static Future<void> addItem({
+
   //   required String name,
   //   required String address,
   // }) async {
