@@ -68,7 +68,9 @@ class CurrentReservationPage extends HookWidget {
             const SizedBox(width: 120.0),
             Container(
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Database.deleteReservation(userid: user.uid);
+                  },
                   icon: const Icon(
                     Icons.close,
                     color: Color(0xFF5EC7F8),
