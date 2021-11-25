@@ -6,57 +6,47 @@ import 'package:cafe_reservation/models/reservation.dart';
 import 'package:cafe_reservation/models/user.dart';
 import 'package:cafe_reservation/widgets/cafe_info_template.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-class CurrentReservationPage extends StatefulWidget {
-  final Cafe? cafe;
+class CurrentReservationPage extends HookWidget {
+  const CurrentReservationPage({Key? key}) : super(key: key);
 
-  const CurrentReservationPage({Key? key, this.cafe}) : super(key: key);
-
-  @override
-  _CurrentReservationPageState createState() => _CurrentReservationPageState();
-}
-
-class _CurrentReservationPageState extends State<CurrentReservationPage> {
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<User>(context);
+    final _reservationMemo =
+        useMemoized(() => Database.readReservation(userid: user.uid));
+    final _reservation = useFuture(_reservationMemo);
     return CafeInfoTemplate(
       children: <Widget>[
         Text(
-          widget.cafe?.name ?? 'No Reservation',
+          _reservation.hasData
+              ? _reservation.data!.cafe.name
+              : 'No Reservation',
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 5),
         Text(
-          widget.cafe?.address ?? 'No address found.',
+          _reservation.hasData
+              ? _reservation.data!.cafe.address
+              : 'No address found.',
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w200,
           ),
         ),
         const SizedBox(height: 100),
-        _buildReservationInfo(context)
+        _buildReservationInfo(context,
+            reservation: _reservation.data as Reservation),
       ],
     );
   }
 
-  Widget _buildReservationInfo(BuildContext context) {
-    User user = Provider.of<User>(context);
-    Database.readReservation(userid: user.uid);
-    log('2');
-    return FutureBuilder<Reservation>(
-        future: Database.readReservation(userid: user.uid),
-        builder: (BuildContext context, AsyncSnapshot<Reservation> snap) {
-          if (snap.hasError) {
-            return const Text('Something went wrong');
-          }
-
-          if (snap.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          }
-
-          Reservation currentRes = snap.data!;
-          return Text(currentRes.toString());
-        });
+  Widget _buildReservationInfo(BuildContext context,
+      {required Reservation reservation}) {
+    return Column(children: <Widget>[
+      Text(reservation.toString()),
+    ]);
   }
 }

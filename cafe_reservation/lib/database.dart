@@ -69,12 +69,14 @@ class Database {
     await updateCafe(cafe: c);
   }
 
-  static Future<Reservation> readReservation({required String userid}) async {
+  static Future<Reservation?> readReservation({required String userid}) async {
     QuerySnapshot snap = await _firestore
         .collection('reservations')
         .where("userid", isEqualTo: userid)
         .get();
-
+    if (snap.docs.isEmpty) {
+      return null;
+    }
     QueryDocumentSnapshot resDoc = snap.docs[0];
     Map<String, dynamic> data = resDoc.data() as Map<String, dynamic>;
     Cafe c = await readCafe(docId: data['cafe']);

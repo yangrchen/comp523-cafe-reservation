@@ -25,6 +25,6 @@ class Reservation {
   }
 
   String toString() {
-    return "Reservation for user ${userid} with a party of ${size} at ${cafe.name} at ${startTime}";
+    return "Reservation for user $userid with a party of $size at ${cafe.name} at $startTime";
   }
 }
