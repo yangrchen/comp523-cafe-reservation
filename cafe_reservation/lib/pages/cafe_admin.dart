@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
 import 'package:cafe_reservation/models/table.dart' as t;
@@ -7,7 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CafeAdmin extends StatefulWidget {
-  const CafeAdmin({Key? key}) : super(key: key);
+  Cafe cafe;
+  CafeAdmin({Key? key, required this.cafe}) : super(key: key);
 
   @override
   _CafeAdminState createState() => _CafeAdminState();
@@ -32,6 +35,8 @@ class _CafeAdminState extends State<CafeAdmin> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<User>(context);
+    log(widget.cafe.name);
+    Cafe cafe = widget.cafe;
 
     String title = 'Cafe Admin';
     Map<String, bool> times = {
@@ -50,7 +55,6 @@ class _CafeAdminState extends State<CafeAdmin> {
     for (int i = 0; i < 31; i++) {
       dates[f.format(now.add(Duration(days: i)))] = times;
     }
-    Future<Cafe> cafe = Database.readCafe(docId: '6Gd6yngqVNG6OKyLcEN0');
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -60,66 +64,57 @@ class _CafeAdminState extends State<CafeAdmin> {
         ),
         centerTitle: true,
       ),
-      body: FutureBuilder<Cafe>(
-        future: cafe,
-        builder: (BuildContext context, AsyncSnapshot snap) {
-          if (!snap.hasData) {
-            return const CircularProgressIndicator();
-          }
-          Cafe cafe = snap.data;
-          return ListView(
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.all(25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    DropdownButton(
-                      value: dropdownValue,
-                      onChanged: (int? newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                        });
-                      },
-                      items: [1, 2, 3, 4, 5, 6]
-                          .map((num) => DropdownMenuItem(
-                                child: Text(num.toString()),
-                                value: num,
-                              ))
-                          .toList(),
-                    ),
-                    ElevatedButton(
-                      child: const Text('Click Here'),
-                      onPressed: () {
-                        cafe.tables.add(t.Table(dropdownValue, dates));
-                        Database.updateCafe(cafe: cafe);
-                        setState(() {
-                          cafe;
-                        });
-                      },
-                    ),
-                  ],
+      body: ListView(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.all(25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  value: dropdownValue,
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                  },
+                  items: [1, 2, 3, 4, 5, 6]
+                      .map((num) => DropdownMenuItem(
+                            child: Text(num.toString()),
+                            value: num,
+                          ))
+                      .toList(),
                 ),
-              ),
-              GridView.count(
-                shrinkWrap: true,
-                childAspectRatio: (4 / 2),
-                crossAxisSpacing: 30,
+                ElevatedButton(
+                  child: const Text('Click Here'),
+                  onPressed: () {
+                    cafe.tables.add(t.Table(dropdownValue, dates));
+                    Database.updateCafe(cafe: cafe);
+                    setState(() {
+                      cafe;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          GridView.count(
+            shrinkWrap: true,
+            childAspectRatio: (4 / 2),
+            crossAxisSpacing: 30,
 
-                // Create a grid with 2 columns. If you change the scrollDirection to
-                // horizontal, this produces 2 rows.
-                crossAxisCount: 3,
-                mainAxisSpacing: 60,
-                // Generate 100 widgets that display their index in the List.
-                children: generateButtons(cafe),
-              ),
-              Container(
-                margin: const EdgeInsets.all(25),
-                child: Text(cafe.tables.toString()),
-              ),
-            ],
-          );
-        },
+            // Create a grid with 2 columns. If you change the scrollDirection to
+            // horizontal, this produces 2 rows.
+            crossAxisCount: 3,
+            mainAxisSpacing: 60,
+            // Generate 100 widgets that display their index in the List.
+            children: generateButtons(cafe),
+          ),
+          Container(
+            margin: const EdgeInsets.all(25),
+            child: Text(cafe.tables.toString()),
+          ),
+        ],
       ),
     );
   }
