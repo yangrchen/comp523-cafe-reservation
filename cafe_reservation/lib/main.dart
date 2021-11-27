@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cafe_reservation/models/user.dart' as U;
 
+import 'database.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const App());
@@ -59,10 +61,29 @@ class _AppState extends State<App> {
                         child: _buildMaterialApp(isAuthenticated: false),
                       );
                     } else {
-                      return Provider<U.User>(
-                        create: (context) => U.User(user.uid, user.email!),
-                        child: _buildMaterialApp(isAuthenticated: true),
-                      );
+                      return FutureBuilder(
+                          future: Database.isUserAdmin(user: user),
+                          builder: (BuildContext context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Scaffold(
+                                body: Center(
+                                  child: Text("Error: ${snapshot.error}"),
+                                ),
+                              );
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return Provider<U.User>(
+                                create: (context) => U.User(
+                                  user.uid,
+                                  user.email!,
+                                  snapshot.data == true,
+                                ),
+                                child: _buildMaterialApp(isAuthenticated: true),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          });
                     }
                   }
                   return const CircularProgressIndicator();
