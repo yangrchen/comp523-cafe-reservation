@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cafe_reservation/models/cafe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cafe_reservation/pages/cafe_admin.dart';
@@ -27,7 +28,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[HomePage(), CafeAdmin()];
+  static const List<Widget> _widgetOptions = <Widget>[HomePage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -73,13 +74,17 @@ class _AppState extends State<App> {
                             }
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
+                              bool isAdmin = snapshot.data == true;
                               return Provider<U.User>(
                                 create: (context) => U.User(
                                   user.uid,
                                   user.email!,
-                                  snapshot.data == true,
+                                  isAdmin,
                                 ),
-                                child: _buildMaterialApp(isAuthenticated: true),
+                                child: isAdmin
+                                    ? _buildAdminMaterialApp(
+                                        cafeID: '6Gd6yngqVNG6OKyLcEN0')
+                                    : _buildMaterialApp(isAuthenticated: true),
                               );
                             }
                             return const CircularProgressIndicator();
@@ -112,10 +117,6 @@ class _AppState extends State<App> {
                     icon: Icon(Icons.home),
                     label: 'Home',
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.business),
-                    label: 'Cafe Admin',
-                  ),
                 ],
                 currentIndex: _selectedIndex,
                 onTap: _onItemTapped,
@@ -123,5 +124,34 @@ class _AppState extends State<App> {
             : null,
       ),
     );
+  }
+
+  Widget _buildAdminMaterialApp({required String cafeID}) {
+    return FutureBuilder(
+        future: Database.readCafe(docId: cafeID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text("Error: ${snapshot.error}"),
+              ),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Cafe Admin Portal',
+              theme: ThemeData(
+                primarySwatch:
+                    Utils.createMaterialColor(const Color(0xFFA0C8ED)),
+                dividerColor: Colors.grey,
+              ),
+              home: CafeAdmin(
+                cafe: snapshot.data as Cafe,
+              ),
+            );
+          }
+          return const CircularProgressIndicator();
+        });
   }
 }
