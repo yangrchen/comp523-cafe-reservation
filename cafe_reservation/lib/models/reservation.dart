@@ -14,7 +14,7 @@ class Reservation {
   Reservation(this.userid, this.cafe, this.tables, this.size, this.date,
       this.startTime, this.endTime);
 
-  Reservation.fromDoc(QueryDocumentSnapshot doc, this.cafe) {
+  Reservation.fromDoc(DocumentSnapshot doc, this.cafe) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     userid = data['userid'];
     tables = data['tables'].cast<String>();
@@ -24,6 +24,11 @@ class Reservation {
     endTime = data['endTime'];
   }
 
+  static bool deleteReservation(String userid) {
+    return false;
+  }
+
+  @override
   String toString() {
     return "Reservation for user $userid with a party of $size at ${cafe.name} at $startTime";
   }

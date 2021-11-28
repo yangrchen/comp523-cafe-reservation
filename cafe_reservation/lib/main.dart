@@ -57,7 +57,6 @@ class _AppState extends State<App> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
                     User? user = snapshot.data as User?;
-                    log("${user}");
                     if (user == null) {
                       return Provider<U.User>(
                         create: (context) => U.User.blank(),
