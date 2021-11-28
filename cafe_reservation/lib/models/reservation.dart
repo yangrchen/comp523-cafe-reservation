@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import 'cafe.dart';
 
-class Reservation extends ChangeNotifier {
+class Reservation {
   late String userid; //CHANGE TO REFERENCE TO USER OBJECT LATER
   late Cafe cafe;
   late List<String> tables;
@@ -23,7 +22,6 @@ class Reservation extends ChangeNotifier {
     date = data['date'];
     startTime = data['startTime'];
     endTime = data['endTime'];
-    notifyListeners();
   }
 
   static bool deleteReservation(String userid) {
