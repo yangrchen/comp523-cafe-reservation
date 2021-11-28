@@ -23,7 +23,7 @@ class _CafeInfoState extends State<CafeInfo> {
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
   int _selectedPeople = 1;
   String _selectedTime = '0';
-  T.Table? _selectedTable = null;
+  T.Table? _selectedTable;
   Map<String, List<T.Table>> _availableTimes = {};
   @override
   Widget build(BuildContext context) {
