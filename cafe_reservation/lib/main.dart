@@ -74,7 +74,9 @@ class _AppState extends State<App> {
                             }
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
-                              bool isAdmin = snapshot.data == true;
+                              Map<String, dynamic> data =
+                                  snapshot.data as Map<String, dynamic>;
+                              bool isAdmin = data['isAdmin'] == true;
                               return Provider<U.User>(
                                 create: (context) => U.User(
                                   user.uid,
@@ -83,7 +85,7 @@ class _AppState extends State<App> {
                                 ),
                                 child: isAdmin
                                     ? _buildAdminMaterialApp(
-                                        cafeID: '6Gd6yngqVNG6OKyLcEN0')
+                                        cafeID: data['cafe'])
                                     : _buildMaterialApp(isAuthenticated: true),
                               );
                             }
