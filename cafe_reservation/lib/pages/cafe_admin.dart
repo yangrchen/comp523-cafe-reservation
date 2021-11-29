@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
-import 'package:cafe_reservation/models/table.dart' as t;
-import 'package:cafe_reservation/models/user.dart';
+import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:cafe_reservation/models/user.dart' as U;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,10 @@ class CafeAdmin extends StatefulWidget {
 class _CafeAdminState extends State<CafeAdmin> {
   int dropdownValue = 1;
 
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   List<Widget> generateButtons(cafe) {
     List<ElevatedButton> availList = [];
     cafe.checkAvailability(DateTime.now(), 4).forEach((key, value) {
@@ -32,9 +37,8 @@ class _CafeAdminState extends State<CafeAdmin> {
     return availList;
   }
 
-  @override
   Widget build(BuildContext context) {
-    var user = Provider.of<User>(context);
+    U.User user = Provider.of<U.User>(context);
     log(widget.cafe.name);
     Cafe cafe = widget.cafe;
 
@@ -57,64 +61,80 @@ class _CafeAdminState extends State<CafeAdmin> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Cafe Admin'),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton(
-                  value: dropdownValue,
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: [1, 2, 3, 4, 5, 6]
-                      .map((num) => DropdownMenuItem(
-                            child: Text(num.toString()),
-                            value: num,
-                          ))
-                      .toList(),
-                ),
-                ElevatedButton(
-                  child: const Text('Click Here'),
-                  onPressed: () {
-                    cafe.tables.add(t.Table(dropdownValue, dates));
-                    Database.updateCafe(cafe: cafe);
-                    setState(() {
-                      cafe;
-                    });
-                  },
-                ),
-              ],
+      body: Container(
+        margin: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    children: [
+                      DropdownButton(
+                        value: dropdownValue,
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                        items: [1, 2, 3, 4, 5, 6]
+                            .map((num) => DropdownMenuItem(
+                                  child: Text(num.toString()),
+                                  value: num,
+                                ))
+                            .toList(),
+                      ),
+                      ElevatedButton(
+                        child: const Text('Add Table'),
+                        onPressed: () {
+                          cafe.tables.add(T.Table(dropdownValue, dates));
+                          Database.updateCafe(cafe: cafe);
+                          setState(() {
+                            cafe;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    child: const Text('Sign Out'),
+                    onPressed: () {
+                      _signOut();
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          GridView.count(
-            shrinkWrap: true,
-            childAspectRatio: (4 / 2),
-            crossAxisSpacing: 30,
-
-            // Create a grid with 2 columns. If you change the scrollDirection to
-            // horizontal, this produces 2 rows.
-            crossAxisCount: 3,
-            mainAxisSpacing: 60,
-            // Generate 100 widgets that display their index in the List.
-            children: generateButtons(cafe),
-          ),
-          Container(
-            margin: const EdgeInsets.all(25),
-            child: Text(cafe.tables.toString()),
-          ),
-        ],
+            Expanded(
+              child: GridView.count(
+                shrinkWrap: true,
+                childAspectRatio: 6 / 7,
+                crossAxisCount: 3,
+                crossAxisSpacing: 15.0,
+                mainAxisSpacing: 15.0,
+                children: cafe.tables
+                    .map<Widget>((T.Table table) => Card(
+                          color: Colors.lightGreen[200],
+                          child: Container(
+                            child: Center(
+                              child: Text(table.size.toString()),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

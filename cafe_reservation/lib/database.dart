@@ -85,12 +85,13 @@ class Database {
         .catchError((e) => log(e));
   }
 
-  static Future<bool> isUserAdmin({required User user}) async {
+  static Future<Map<String, dynamic>> isUserAdmin({required User user}) async {
     DocumentReference documentReferencer =
         _firestore.collection('users').doc(user.uid);
     DocumentSnapshot doc = await documentReferencer.get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return data['isAdmin'] ?? false;
+
+    return data;
   }
   // static Future<void> addItem({
   //   required String name,
