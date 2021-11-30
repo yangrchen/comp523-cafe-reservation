@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: userController,
               decoration: const InputDecoration(
-                hintText: 'Username',
+                hintText: 'Email',
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12))),
               ),
@@ -194,8 +194,11 @@ class _LoginPageState extends State<LoginPage> {
                       _isRegistering = !_isRegistering;
                     });
                   },
-                  child: const Text('Sign Up',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: _isRegistering
+                      ? const Text('Login',
+                          style: TextStyle(fontWeight: FontWeight.bold))
+                      : const Text('Sign Up',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
