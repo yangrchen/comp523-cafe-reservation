@@ -1,10 +1,17 @@
+import 'package:uuid/uuid.dart';
+
 class Table {
+  late String tid;
   late int size;
   late Map<String, Map<String, bool>> dates;
-  Table(this.size, this.dates);
+  Table(this.size, this.dates) {
+    const uuid = Uuid();
+    tid = uuid.v4();
+  }
 
   Table.fromMap(Map<String, dynamic> map) {
     size = map['size'];
+    tid = map['tid'] ?? '';
     var d = Map<String, dynamic>.from(map['dates']);
     dates = {};
     d.forEach((key, value) {
@@ -15,6 +22,7 @@ class Table {
     return {
       'size': size,
       'dates': dates,
+      'tid': tid,
     };
   }
 
@@ -27,8 +35,3 @@ class Table {
         ' dates.';
   }
 }
-/*
-Table
-size
-dates Map<datetime, Map<timeslot, boolean>>
-*/
