@@ -238,6 +238,7 @@ class _CafeInfoState extends State<CafeInfo> {
                   (int.parse(_selectedTime) + 1).toString());
               log(newRes.toString());
               Database.addReservation(res: newRes);
+              Navigator.pop(context);
             }
           : null,
       child: Container(

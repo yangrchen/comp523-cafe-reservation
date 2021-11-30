@@ -83,11 +83,11 @@ class CurrentReservationPage extends HookWidget {
                                 _refresh.value++,
                                 Navigator.pop(context)
                               },
-                              child: const Text('Confirm'),
+                              child: const Text('Yes'),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
+                              child: const Text('No'),
                             ),
                           ],
                         ),
