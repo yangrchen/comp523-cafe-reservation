@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cafe_reservation/models/cafe.dart';
+import 'package:cafe_reservation/pages/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cafe_reservation/pages/cafe_admin.dart';
@@ -32,6 +33,7 @@ class _AppState extends State<App> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     CurrentReservationPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -114,7 +116,7 @@ class _AppState extends State<App> {
       home: Scaffold(
         body: isAuthenticated
             ? _widgetOptions.elementAt(_selectedIndex)
-            : LoginPage(),
+            : const LoginPage(),
         bottomNavigationBar: isAuthenticated
             ? BottomNavigationBar(
                 items: const <BottomNavigationBarItem>[
@@ -125,6 +127,10 @@ class _AppState extends State<App> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.book),
                     label: 'My Reservation',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.account_circle),
+                    label: 'Profile',
                   ),
                 ],
                 currentIndex: _selectedIndex,
