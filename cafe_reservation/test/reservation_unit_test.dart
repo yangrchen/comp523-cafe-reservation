@@ -11,7 +11,7 @@ void main() {
         Reservation(userid, c, ['1', '2'], 3, '2021-11-18', '1', '2');
     expect(r.userid, 'user1');
     expect(r.cafe, c);
-    expect(r.tables, [1, 2]);
+    expect(r.tables, ['1', '2']);
     expect(r.size, 3);
     expect(r.date, '2021-11-18');
     expect(r.startTime, '1');
