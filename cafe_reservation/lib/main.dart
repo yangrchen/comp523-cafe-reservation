@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cafe_reservation/models/cafe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cafe_reservation/pages/cafe_admin.dart';
@@ -8,6 +11,8 @@ import 'package:cafe_reservation/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cafe_reservation/models/user.dart' as U;
+
+import 'database.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +31,6 @@ class _AppState extends State<App> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    CafeAdmin(),
     CurrentReservationPage(),
   ];
 
@@ -61,10 +65,35 @@ class _AppState extends State<App> {
                         child: _buildMaterialApp(isAuthenticated: false),
                       );
                     } else {
-                      return Provider<U.User>(
-                        create: (context) => U.User(user.uid, user.email!),
-                        child: _buildMaterialApp(isAuthenticated: true),
-                      );
+                      return FutureBuilder(
+                          future: Database.isUserAdmin(user: user),
+                          builder: (BuildContext context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Scaffold(
+                                body: Center(
+                                  child: Text("Error: ${snapshot.error}"),
+                                ),
+                              );
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              Map<String, dynamic> data =
+                                  snapshot.data as Map<String, dynamic>;
+                              bool isAdmin = data['isAdmin'] == true;
+                              return Provider<U.User>(
+                                create: (context) => U.User(
+                                  user.uid,
+                                  user.email!,
+                                  isAdmin,
+                                ),
+                                child: isAdmin
+                                    ? _buildAdminMaterialApp(
+                                        cafeID: data['cafe'])
+                                    : _buildMaterialApp(isAuthenticated: true),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          });
                     }
                   }
                   return const CircularProgressIndicator();
@@ -94,10 +123,6 @@ class _AppState extends State<App> {
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.business),
-                    label: 'Cafe Admin',
-                  ),
-                  BottomNavigationBarItem(
                     icon: Icon(Icons.book),
                     label: 'My Reservation',
                   ),
@@ -108,5 +133,34 @@ class _AppState extends State<App> {
             : null,
       ),
     );
+  }
+
+  Widget _buildAdminMaterialApp({required String cafeID}) {
+    return FutureBuilder(
+        future: Database.readCafe(docId: cafeID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text("Error: ${snapshot.error}"),
+              ),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Cafe Admin Portal',
+              theme: ThemeData(
+                primarySwatch:
+                    Utils.createMaterialColor(const Color(0xFFA0C8ED)),
+                dividerColor: Colors.grey,
+              ),
+              home: CafeAdmin(
+                cafe: snapshot.data as Cafe,
+              ),
+            );
+          }
+          return const CircularProgressIndicator();
+        });
   }
 }

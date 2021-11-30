@@ -1,3 +1,4 @@
+import 'package:cafe_reservation/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +23,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _registerWithEmail(String email, String password) async {
-    await FirebaseAuth.instance
+    UserCredential userCred = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
+    User user = userCred.user!;
+    await Database.addUserWithID(user: user);
   }
 
   void _catchFirebaseAuthError(FirebaseAuthException e) {

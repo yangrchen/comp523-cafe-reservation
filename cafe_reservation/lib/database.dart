@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cafe_reservation/models/reservation.dart';
 import 'package:cafe_reservation/models/table.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'models/cafe.dart';
 
@@ -67,6 +68,30 @@ class Database {
         .whenComplete(() => log("Reservation item added to the database"))
         .catchError((e) => log(e));
     await updateCafe(cafe: c);
+  }
+
+  static Future<void> addUserWithID({required User user}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('users').doc(user.uid);
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "email": user.email,
+      "isAdmin": false,
+    };
+
+    await documentReferencer
+        .set(data)
+        .whenComplete(() => log("User item added to the database"))
+        .catchError((e) => log(e));
+  }
+
+  static Future<Map<String, dynamic>> isUserAdmin({required User user}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('users').doc(user.uid);
+    DocumentSnapshot doc = await documentReferencer.get();
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+    return data;
   }
 
   static Future<Reservation?> readReservation({required String userid}) async {
