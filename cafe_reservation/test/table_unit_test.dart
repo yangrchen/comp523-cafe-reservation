@@ -30,11 +30,13 @@ void main() {
       'a': {'b': true}
     };
     var t = T.Table(5, dates);
+    var tid = t.tid;
     expect(t.toMap(), {
       'size': 5,
       'dates': {
         'a': {'b': true}
-      }
+      },
+      'tid': tid,
     });
   });
   test('Table to String', () {
