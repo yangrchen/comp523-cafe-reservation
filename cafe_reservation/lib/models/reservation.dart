@@ -5,7 +5,7 @@ import 'cafe.dart';
 class Reservation {
   late String userid; //CHANGE TO REFERENCE TO USER OBJECT LATER
   late Cafe cafe;
-  late List<int> tables;
+  late List<String> tables;
   late int size;
   late String date;
   late String startTime;
@@ -23,5 +23,9 @@ class Reservation {
     date = data['date'];
     startTime = data['startTime'];
     endTime = data['endTime'];
+  }
+
+  String toString() {
+    return "Reservation for user ${userid} with a party of ${size} at ${cafe.name} at ${startTime}";
   }
 }

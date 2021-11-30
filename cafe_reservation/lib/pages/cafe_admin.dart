@@ -1,11 +1,17 @@
+import 'dart:developer';
+
 import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
-import 'package:cafe_reservation/models/table.dart' as t;
+import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:cafe_reservation/models/user.dart' as U;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CafeAdmin extends StatefulWidget {
-  const CafeAdmin({Key? key}) : super(key: key);
+  Cafe cafe;
+  CafeAdmin({Key? key, required this.cafe}) : super(key: key);
 
   @override
   _CafeAdminState createState() => _CafeAdminState();
@@ -14,8 +20,28 @@ class CafeAdmin extends StatefulWidget {
 class _CafeAdminState extends State<CafeAdmin> {
   int dropdownValue = 1;
 
-  @override
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  List<Widget> generateButtons(cafe) {
+    List<ElevatedButton> availList = [];
+    cafe.checkAvailability(DateTime.now(), 4).forEach((key, value) {
+      availList.add(
+        ElevatedButton(
+          child: Text(key),
+          onPressed: () {},
+        ),
+      );
+    });
+    return availList;
+  }
+
   Widget build(BuildContext context) {
+    U.User user = Provider.of<U.User>(context);
+    log(widget.cafe.name);
+    Cafe cafe = widget.cafe;
+
     String title = 'Cafe Admin';
     Map<String, bool> times = {
       '8': true,
@@ -33,25 +59,25 @@ class _CafeAdminState extends State<CafeAdmin> {
     for (int i = 0; i < 31; i++) {
       dates[f.format(now.add(Duration(days: i)))] = times;
     }
-    Future<Cafe> cafe = Database.readCafe(docId: '6Gd6yngqVNG6OKyLcEN0');
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Cafe Admin'),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        centerTitle: true,
       ),
-      body: FutureBuilder<Cafe>(
-        future: cafe,
-        builder: (BuildContext context, AsyncSnapshot snap) {
-          if (!snap.hasData) {
-            return CircularProgressIndicator();
-          }
-          Cafe cafe = snap.data;
-          return Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.all(25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        margin: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
                     children: [
                       DropdownButton(
                         value: dropdownValue,
@@ -68,9 +94,9 @@ class _CafeAdminState extends State<CafeAdmin> {
                             .toList(),
                       ),
                       ElevatedButton(
-                        child: Text('Click Here'),
+                        child: const Text('Add Table'),
                         onPressed: () {
-                          cafe.tables.add(t.Table(dropdownValue, dates));
+                          cafe.tables.add(T.Table(dropdownValue, dates));
                           Database.updateCafe(cafe: cafe);
                           setState(() {
                             cafe;
@@ -79,23 +105,83 @@ class _CafeAdminState extends State<CafeAdmin> {
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(25),
-                  child: Text(
-                    cafe
-                        .checkAvailability(DateTime.now(), 4)
-                        .toString(), //FOR TESTING
+                  ElevatedButton(
+                    child: const Text('Sign Out'),
+                    onPressed: () {
+                      _signOut();
+                    },
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(25),
-                  child: Text(cafe.tables.toString()),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+            Expanded(
+              child: GridView.count(
+                shrinkWrap: true,
+                childAspectRatio: 6 / 7,
+                crossAxisCount: 3,
+                crossAxisSpacing: 15.0,
+                mainAxisSpacing: 15.0,
+                children: cafe.tables.asMap().entries.map<Widget>((entry) {
+                  int idx = entry.key;
+                  T.Table table = entry.value;
+                  return Stack(
+                    children: [
+                      Card(
+                        color: Colors.lightGreen[200],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text("Table ${idx}"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.people),
+                                Text(table.size.toString()),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          onPressed: () => showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: Text('Delete Table ${idx}?'),
+                              content: const Text(
+                                  'Deleting this table will delete all of the associated reservations as well!'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    cafe.tables.removeAt(idx);
+                                    Database.updateCafe(cafe: cafe);
+                                    setState(() {
+                                      cafe;
+                                    });
+                                    Navigator.pop(context, 'OK');
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          icon: Icon(Icons.remove),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

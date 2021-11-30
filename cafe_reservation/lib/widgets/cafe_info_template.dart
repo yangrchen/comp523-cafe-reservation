@@ -43,24 +43,17 @@ class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
               ),
             ),
             Positioned(
-              top: 300,
+              top: 280,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.7,
               child: Container(
                 margin: const EdgeInsets.only(top: 50.0),
+                padding: const EdgeInsets.only(left: 40.0, right: 40.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 45,
-                    left: 40,
-                  ),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.children),
-                ),
+                child: ListView(children: widget.children),
               ),
             ),
           ],

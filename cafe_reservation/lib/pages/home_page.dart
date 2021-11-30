@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:cafe_reservation/models/user.dart';
 import 'package:cafe_reservation/widgets/cafe_list.dart';
 import 'package:cafe_reservation/widgets/cafe_search.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

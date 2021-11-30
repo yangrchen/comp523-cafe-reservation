@@ -8,15 +8,15 @@ class Cafe {
   late String name;
   late String address;
   late String id;
-  late List tables;
+  late List<Table> tables;
 
   Cafe(this.name, this.address, this.id);
   Cafe.fromDoc(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     name = data['name'];
     address = data['address'];
-    tables =
-        data['tables']?.map((table) => Table.fromMap(table)).toList() ?? [];
+    tables = [];
+    data['tables']?.forEach((table) => tables.add(Table.fromMap(table)));
     id = doc.id;
   }
 
@@ -29,7 +29,7 @@ class Cafe {
     for (Table table in tables) {
       if (table.size < partySize) continue;
 
-      Map<String, bool> times = table.dates[dateString]!;
+      Map<String, bool> times = table.dates[dateString] ?? <String, bool>{};
       times.forEach((time, isAvailable) {
         if (isAvailable) r[time].add(table);
       });

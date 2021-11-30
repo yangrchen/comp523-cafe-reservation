@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:cafe_reservation/models/reservation.dart';
+import 'package:cafe_reservation/models/table.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'models/cafe.dart';
 
@@ -37,34 +40,87 @@ class Database {
         .catchError((e) => log(e.toString()));
   }
 
-  static Future<void> addItem({
-    required String name,
-    required String address,
-  }) async {
-    DocumentReference documentReferencer = _firestore.collection('cafes').doc();
+  static Future<void> addReservation({required Reservation res}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('reservations').doc();
 
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
-      "address": address,
+      "userid": res.userid,
+      "cafe": res.cafe.id,
+      "tables": res.tables,
+      "size": res.size,
+      "date": res.date,
+      "startTime": res.startTime,
+      "endTime": res.endTime,
+    };
+    Cafe c = res.cafe;
+    List<Table> tablesToUpdate = [];
+    c.tables.forEach((table) {
+      if (res.tables.contains(table.tid)) {
+        tablesToUpdate.add(table);
+      }
+    });
+    tablesToUpdate.forEach((table) {
+      table.dates[res.date]![res.startTime] = false;
+    });
+    await documentReferencer
+        .set(data)
+        .whenComplete(() => log("Reservation item added to the database"))
+        .catchError((e) => log(e));
+    await updateCafe(cafe: c);
+  }
+
+  static Future<void> addUserWithID({required User user}) async {
+    DocumentReference documentReferencer =
+        _firestore.collection('users').doc(user.uid);
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "email": user.email,
+      "isAdmin": false,
     };
 
     await documentReferencer
         .set(data)
-        .whenComplete(() => log("Note item added to the database"))
+        .whenComplete(() => log("User item added to the database"))
         .catchError((e) => log(e));
   }
 
-  static Future<void> deleteItem({
-    required String docId,
-  }) async {
+  static Future<Map<String, dynamic>> isUserAdmin({required User user}) async {
     DocumentReference documentReferencer =
-        _firestore.collection('cafes').doc(docId);
+        _firestore.collection('users').doc(user.uid);
+    DocumentSnapshot doc = await documentReferencer.get();
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    await documentReferencer
-        .delete()
-        .whenComplete(() => log('Note item deleted from the database'))
-        .catchError((e) => log(e));
+    return data;
   }
+  // static Future<void> addItem({
+  //   required String name,
+  //   required String address,
+  // }) async {
+  //   DocumentReference documentReferencer = _firestore.collection('cafes').doc();
+
+  //   Map<String, dynamic> data = <String, dynamic>{
+  //     "name": name,
+  //     "address": address,
+  //   };
+
+  //   await documentReferencer
+  //       .set(data)
+  //       .whenComplete(() => log("Note item added to the database"))
+  //       .catchError((e) => log(e));
+  // }
+
+  // static Future<void> deleteItem({
+  //   required String docId,
+  // }) async {
+  //   DocumentReference documentReferencer =
+  //       _firestore.collection('cafes').doc(docId);
+
+  //   await documentReferencer
+  //       .delete()
+  //       .whenComplete(() => log('Note item deleted from the database'))
+  //       .catchError((e) => log(e));
+  // }
   // static Future<void> addItem({
   //   required String title,
   //   required String description,
