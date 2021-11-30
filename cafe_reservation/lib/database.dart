@@ -70,6 +70,43 @@ class Database {
     await updateCafe(cafe: c);
   }
 
+  static Future<Reservation?> readReservation({required String userid}) async {
+    DocumentSnapshot doc =
+        await _firestore.collection('reservations').doc(userid).get();
+    if (!doc.exists) {
+      return null;
+    }
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    Cafe c = await readCafe(docId: data['cafe']);
+    return Reservation.fromDoc(doc, c);
+  }
+
+  static Future<void> deleteReservation({required String userid}) async {
+    DocumentReference currentReservation =
+        _firestore.collection('reservations').doc(userid);
+
+    DocumentSnapshot snap = await currentReservation.get();
+    Map<String, dynamic> data = snap.data() as Map<String, dynamic>;
+    Cafe cafe = await readCafe(docId: data['cafe']);
+
+    Reservation res = Reservation.fromDoc(snap, cafe);
+    List<Table> tablesToUpdate = [];
+    cafe.tables.forEach((table) {
+      if (res.tables.contains(table.tid)) {
+        tablesToUpdate.add(table);
+      }
+    });
+    tablesToUpdate.forEach((table) {
+      table.dates[res.date]![res.startTime] = true;
+    });
+
+    await currentReservation
+        .delete()
+        .then((val) => log('Reservation deleted'))
+        .catchError((e) => log(e));
+    await updateCafe(cafe: cafe);
+  }
+
   static Future<void> addUserWithID({required User user}) async {
     DocumentReference documentReferencer =
         _firestore.collection('users').doc(user.uid);
@@ -92,25 +129,5 @@ class Database {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     return data;
-  }
-
-  static Future<Reservation?> readReservation({required String userid}) async {
-    DocumentSnapshot doc =
-        await _firestore.collection('reservations').doc(userid).get();
-    if (!doc.exists) {
-      return null;
-    }
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    Cafe c = await readCafe(docId: data['cafe']);
-    return Reservation.fromDoc(doc, c);
-  }
-
-  static Future<void> deleteReservation({required String userid}) async {
-    DocumentReference currentReservation =
-        _firestore.collection('reservations').doc(userid);
-    return currentReservation
-        .delete()
-        .then((val) => log('Reservation deleted'))
-        .catchError((e) => log(e));
   }
 }
