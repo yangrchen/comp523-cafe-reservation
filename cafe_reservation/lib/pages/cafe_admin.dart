@@ -121,16 +121,26 @@ class _CafeAdminState extends State<CafeAdmin> {
                 crossAxisCount: 3,
                 crossAxisSpacing: 15.0,
                 mainAxisSpacing: 15.0,
-                children: cafe.tables
-                    .map<Widget>((T.Table table) => Card(
-                          color: Colors.lightGreen[200],
-                          child: Container(
-                            child: Center(
-                              child: Text(table.size.toString()),
-                            ),
-                          ),
-                        ))
-                    .toList(),
+                children: cafe.tables.asMap().entries.map<Widget>((entry) {
+                  int idx = entry.key;
+                  T.Table table = entry.value;
+                  return Card(
+                    color: Colors.lightGreen[200],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("Table ${idx}"),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.people),
+                            Text(table.size.toString()),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ],
