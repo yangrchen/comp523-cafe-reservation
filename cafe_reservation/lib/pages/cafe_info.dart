@@ -23,13 +23,14 @@ class _CafeInfoState extends State<CafeInfo> {
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
   int _selectedPeople = 1;
   String _selectedTime = '0';
-  T.Table? _selectedTable = null;
+  T.Table? _selectedTable;
   Map<String, List<T.Table>> _availableTimes = {};
   @override
   Widget build(BuildContext context) {
     _availableTimes =
         widget.cafe.checkAvailability(_selectedDate, _selectedPeople);
     return CafeInfoTemplate(
+      hasBackButton: true,
       children: <Widget>[
         Text(
           widget.cafe.name,
@@ -168,15 +169,15 @@ class _CafeInfoState extends State<CafeInfo> {
 
   Widget _buildTimeGrid({required Map<String, List<T.Table>> timemap}) {
     List<String> times = timemap.keys.toList();
-    times.sort();
+    times.sort((a, b) => int.parse(a).compareTo(int.parse(b)));
     return Container(
       alignment: AlignmentDirectional.center,
       child: timemap.isNotEmpty
           ? GridView.count(
               shrinkWrap: true,
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               crossAxisSpacing: 12,
-              mainAxisSpacing: 17,
+              mainAxisSpacing: 15,
               childAspectRatio: 2.0,
               children: List.generate(
                 timemap.length,
@@ -189,9 +190,17 @@ class _CafeInfoState extends State<CafeInfo> {
 
   Widget _buildTimeButton(String time, List<T.Table> tables) {
     tables.sort((a, b) => a.size.compareTo(b.size));
+    bool isAM = int.parse(time) < 12;
+    String timeString = '';
+    if (isAM) {
+      timeString = '$time:00 AM';
+    } else if (time == '12') {
+      timeString = '$time:00 PM';
+    } else {
+      timeString = '${int.parse(time) % 12}:00 PM';
+    }
     return ElevatedButton(
       onPressed: () {
-        log(tables.toString());
         setState(() {
           _selectedTable = tables[0];
           _selectedTime = time;
@@ -203,8 +212,8 @@ class _CafeInfoState extends State<CafeInfo> {
       child: SizedBox(
         child: Center(
           child: Text(
-            time,
-            style: const TextStyle(color: Colors.white),
+            timeString,
+            style: const TextStyle(color: Colors.white, fontSize: 12.0),
           ),
         ),
       ),
@@ -226,8 +235,6 @@ class _CafeInfoState extends State<CafeInfo> {
                   f.format(_selectedDate),
                   _selectedTime,
                   (int.parse(_selectedTime) + 1).toString());
-              // log(_selectedTable.toString());
-              // log(user.uid);
               log(newRes.toString());
               Database.addReservation(res: newRes);
             }

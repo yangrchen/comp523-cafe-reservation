@@ -4,6 +4,7 @@ import 'package:cafe_reservation/models/cafe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cafe_reservation/pages/cafe_admin.dart';
+import 'package:cafe_reservation/pages/current_reservation.dart';
 import 'package:cafe_reservation/pages/home_page.dart';
 import 'package:cafe_reservation/pages/login_page.dart';
 import 'package:cafe_reservation/utils.dart';
@@ -28,7 +29,10 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[HomePage()];
+  static const List<Widget> _widgetOptions = <Widget>[
+    HomePage(),
+    CurrentReservationPage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -55,7 +59,6 @@ class _AppState extends State<App> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
                     User? user = snapshot.data as User?;
-                    log("${user}");
                     if (user == null) {
                       return Provider<U.User>(
                         create: (context) => U.User.blank(),
@@ -118,6 +121,10 @@ class _AppState extends State<App> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home),
                     label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.book),
+                    label: 'My Reservation',
                   ),
                 ],
                 currentIndex: _selectedIndex,
