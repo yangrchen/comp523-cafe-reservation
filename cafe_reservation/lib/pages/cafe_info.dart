@@ -83,6 +83,7 @@ class _CafeInfoState extends State<CafeInfo> {
           height: 15,
         ),
         _buildReserveButton(context, widget.cafe),
+        const SizedBox(height: 100.0),
       ],
     );
   }
