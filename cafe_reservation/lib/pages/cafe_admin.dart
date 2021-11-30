@@ -124,21 +124,58 @@ class _CafeAdminState extends State<CafeAdmin> {
                 children: cafe.tables.asMap().entries.map<Widget>((entry) {
                   int idx = entry.key;
                   T.Table table = entry.value;
-                  return Card(
-                    color: Colors.lightGreen[200],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text("Table ${idx}"),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  return Stack(
+                    children: [
+                      Card(
+                        color: Colors.lightGreen[200],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Icon(Icons.people),
-                            Text(table.size.toString()),
+                            Text("Table ${idx}"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.people),
+                                Text(table.size.toString()),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          onPressed: () => showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: Text('Delete Table ${idx}?'),
+                              content: const Text(
+                                  'Deleting this table will delete all of the associated reservations as well!'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    cafe.tables.removeAt(idx);
+                                    Database.updateCafe(cafe: cafe);
+                                    setState(() {
+                                      cafe;
+                                    });
+                                    Navigator.pop(context, 'OK');
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          icon: Icon(Icons.remove),
+                        ),
+                      ),
+                    ],
                   );
                 }).toList(),
               ),
