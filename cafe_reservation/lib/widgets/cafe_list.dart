@@ -30,7 +30,7 @@ class _CafeListState extends State<CafeList> {
       addRepaintBoundaries: false,
       itemCount: cafes.length,
       itemBuilder: (BuildContext context, int idx) {
-        return CafeLargeTile(cafe: cafes[idx]);
+        return CafeLargeTile(cafe: cafes[idx], index: idx);
       },
       separatorBuilder: (BuildContext context, int idx) {
         return const SizedBox(width: 20);
