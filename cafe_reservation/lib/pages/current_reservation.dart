@@ -22,6 +22,7 @@ class CurrentReservationPage extends HookWidget {
       [_refresh.value],
     );
     final _res = useFuture(_resMemo, preserveState: false);
+    log('$_res');
     return CafeInfoTemplate(
       children: <Widget>[
         Text(
@@ -78,8 +79,9 @@ class CurrentReservationPage extends HookWidget {
                               'Are you sure you would like to cancel your reservation?'),
                           actions: <Widget>[
                             TextButton(
-                              onPressed: () => {
-                                Database.deleteReservation(userid: user.uid),
+                              onPressed: () async => {
+                                await Database.deleteReservation(
+                                    userid: user.uid),
                                 _refresh.value++,
                                 Navigator.pop(context)
                               },
