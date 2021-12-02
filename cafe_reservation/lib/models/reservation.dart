@@ -24,10 +24,6 @@ class Reservation {
     endTime = data['endTime'];
   }
 
-  static bool deleteReservation(String userid) {
-    return false;
-  }
-
   @override
   String toString() {
     return "Reservation for user $userid with a party of $size at ${cafe.name} at $startTime";
