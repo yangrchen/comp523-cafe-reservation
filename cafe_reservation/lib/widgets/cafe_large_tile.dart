@@ -3,9 +3,11 @@ import 'package:cafe_reservation/pages/cafe_info.dart';
 import 'package:flutter/material.dart';
 
 class CafeLargeTile extends StatelessWidget {
-  const CafeLargeTile({Key? key, required this.cafe}) : super(key: key);
+  const CafeLargeTile({Key? key, required this.cafe, required this.index})
+      : super(key: key);
 
   final Cafe cafe;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -18,15 +20,19 @@ class CafeLargeTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CafeInfo(cafe: cafe),
-                  ),
-                );
-              },
-            ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CafeInfo(cafe: cafe),
+                    ),
+                  );
+                },
+                child: Ink.image(
+                  image: AssetImage('assets/images/img2.jpg'),
+                  width: 200.0,
+                  height: 400.0,
+                )),
           ),
         ),
         Container(
