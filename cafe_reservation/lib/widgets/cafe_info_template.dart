@@ -25,6 +25,7 @@ class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
             Container(
               height: MediaQuery.of(context).size.height * 0.45,
               color: Theme.of(context).primaryColor,
+              child: Image.asset('assets/images/img2.jpg', fit: BoxFit.fill),
             ),
             widget.hasBackButton
                 ? Positioned(
@@ -36,7 +37,7 @@ class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
                       padding: const EdgeInsets.only(left: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromRGBO(133, 133, 133, 0.4),
+                        color: const Color.fromRGBO(133, 133, 133, 0.8),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_ios,

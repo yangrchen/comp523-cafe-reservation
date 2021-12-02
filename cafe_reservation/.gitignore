@@ -52,3 +52,5 @@ ios/build/
 
 *.zip
 coverage/*
+
+.DS_Store

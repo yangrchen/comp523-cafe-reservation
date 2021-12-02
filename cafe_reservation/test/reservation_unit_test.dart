@@ -17,4 +17,11 @@ void main() {
     expect(r.startTime, '1');
     expect(r.endTime, '2');
   });
+
+  test('Reservation to string', () {
+    Reservation r =
+        Reservation(userid, c, ['1', '2'], 3, '2021-11-18', '1', '2');
+    expect(r.toString(),
+        'Reservation for user ${userid} with a party of 3 at ${c.name} at 1');
+  });
 }
