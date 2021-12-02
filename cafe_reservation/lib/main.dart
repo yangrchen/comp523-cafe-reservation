@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cafe_reservation/models/cafe.dart';
 import 'package:cafe_reservation/pages/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -114,6 +112,7 @@ class _AppState extends State<App> {
         dividerColor: Colors.grey,
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: isAuthenticated
             ? _widgetOptions.elementAt(_selectedIndex)
             : const LoginPage(),
