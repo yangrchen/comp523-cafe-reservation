@@ -29,7 +29,9 @@ class CafeLargeTile extends StatelessWidget {
                   );
                 },
                 child: Ink.image(
-                  image: AssetImage('assets/images/img2.jpg'),
+                  image: const AssetImage(
+                    'assets/images/img2.jpg',
+                  ),
                   width: 200.0,
                   height: 400.0,
                 )),
