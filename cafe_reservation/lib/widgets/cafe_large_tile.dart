@@ -14,25 +14,54 @@ class CafeLargeTile extends StatelessWidget {
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
         Container(
+          height: 350,
           width: 230,
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CafeInfo(cafe: cafe),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CafeInfo(cafe: cafe),
+                  ),
+                );
+              },
+              child: Stack(children: [
+                Container(
+                    height: 200,
+                    width: 230,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: (index == 1)
+                              ? const AssetImage('assets/images/img1.jpeg')
+                              : (index == 2)
+                                  ? const AssetImage('assets/images/img2.jpg')
+                                  : (index == 3)
+                                      ? const AssetImage(
+                                          'assets/images/img3.jpg')
+                                      : const AssetImage(
+                                          'assets/images/img4.jpg'),
+                          fit: BoxFit.cover),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                      ),
                     ),
-                  );
-                },
-                child: Ink.image(
-                  image: AssetImage('assets/images/img2.jpg'),
-                  width: 200.0,
-                  height: 400.0,
-                )),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CafeInfo(cafe: cafe),
+                          ),
+                        );
+                      },
+                    ))
+              ]),
+            ),
           ),
         ),
         Container(
