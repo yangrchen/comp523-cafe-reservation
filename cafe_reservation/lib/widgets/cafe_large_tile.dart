@@ -8,6 +8,7 @@ class CafeLargeTile extends StatelessWidget {
 
   final Cafe cafe;
   final int index;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -25,7 +26,10 @@ class CafeLargeTile extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CafeInfo(cafe: cafe),
+                    builder: (context) => CafeInfo(
+                      cafe: cafe,
+                      imageIdx: index,
+                    ),
                   ),
                 );
               },
@@ -35,15 +39,9 @@ class CafeLargeTile extends StatelessWidget {
                     width: 230,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: (index == 1)
-                              ? const AssetImage('assets/images/img1.jpeg')
-                              : (index == 2)
-                                  ? const AssetImage('assets/images/img2.jpg')
-                                  : (index == 3)
-                                      ? const AssetImage(
-                                          'assets/images/img3.jpg')
-                                      : const AssetImage(
-                                          'assets/images/img4.jpg'),
+                          image: (index < 3)
+                              ? AssetImage('assets/images/img$index.jpeg')
+                              : const AssetImage('assets/images/img3.jpeg'),
                           fit: BoxFit.cover),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20.0),
@@ -55,7 +53,10 @@ class CafeLargeTile extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CafeInfo(cafe: cafe),
+                            builder: (context) => CafeInfo(
+                              cafe: cafe,
+                              imageIdx: index,
+                            ),
                           ),
                         );
                       },
@@ -78,7 +79,10 @@ class CafeLargeTile extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CafeInfo(cafe: cafe),
+                  builder: (context) => CafeInfo(
+                    cafe: cafe,
+                    imageIdx: index,
+                  ),
                 ),
               );
             },

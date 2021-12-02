@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 
 class CafeInfo extends StatefulWidget {
   final Cafe cafe;
-  const CafeInfo({Key? key, required this.cafe}) : super(key: key);
+  final int? imageIdx;
+  const CafeInfo({Key? key, required this.cafe, this.imageIdx})
+      : super(key: key);
 
   @override
   _CafeInfoState createState() => _CafeInfoState();
@@ -31,6 +33,7 @@ class _CafeInfoState extends State<CafeInfo> {
         widget.cafe.checkAvailability(_selectedDate, _selectedPeople);
     return CafeInfoTemplate(
       hasBackButton: true,
+      imageIdx: widget.imageIdx,
       children: <Widget>[
         Text(
           widget.cafe.name,

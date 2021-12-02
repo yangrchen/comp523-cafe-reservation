@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 class CafeInfoTemplate extends StatefulWidget {
   final List<Widget> children;
   final bool hasBackButton;
+  final int? imageIdx;
 
   const CafeInfoTemplate(
-      {Key? key, required this.children, this.hasBackButton = false})
+      {Key? key,
+      required this.children,
+      this.hasBackButton = false,
+      this.imageIdx})
       : super(key: key);
 
   @override
@@ -13,6 +17,17 @@ class CafeInfoTemplate extends StatefulWidget {
 }
 
 class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
+  Widget _buildImage(int? idx) {
+    if (idx != null) {
+      if (idx < 3) {
+        return Image.asset('assets/images/img$idx.jpeg', fit: BoxFit.fill);
+      } else {
+        return Image.asset('assets/images/img3.jpeg', fit: BoxFit.fill);
+      }
+    }
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +40,8 @@ class _CafeInfoTemplateState extends State<CafeInfoTemplate> {
             Container(
               height: MediaQuery.of(context).size.height * 0.45,
               color: Theme.of(context).primaryColor,
-              child: Image.asset('assets/images/img2.jpg', fit: BoxFit.fill),
+              // Temporarily image placement for demo
+              child: _buildImage(widget.imageIdx),
             ),
             widget.hasBackButton
                 ? Positioned(
