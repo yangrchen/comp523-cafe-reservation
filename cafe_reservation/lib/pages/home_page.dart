@@ -1,10 +1,5 @@
-import 'dart:developer';
-
-import 'package:cafe_reservation/models/user.dart';
 import 'package:cafe_reservation/widgets/cafe_list.dart';
-import 'package:cafe_reservation/widgets/cafe_search.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,37 +9,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget _buildSearchBar(BuildContext context) {
-    return Container(
-      width: 100,
-      child: Row(
-        children: <Widget>[
-          const Icon(Icons.search),
-          GestureDetector(
-            onTap: () {
-              showSearch(context: context, delegate: CafeSearch());
-            },
-            child: const Text('Search'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     const title = 'Cafe Reservation';
     List<Widget> homePageWidgets = <Widget>[
-      _buildSearchBar(context),
-      const Text(
-        'Popular Cafes',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      const CafeList(),
       const Text(
         'Cafes',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      )
+      ),
+      const CafeList(),
     ];
     return Scaffold(
       appBar: AppBar(
