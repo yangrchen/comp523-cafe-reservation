@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+../.DS_Store
 .atom/
 .buildlog/
 .history
@@ -49,6 +50,9 @@ app.*.map.json
 ios/*.app.*
 ios/*.ipa
 ios/build/
+
+# Firebase related
+ios/*.plist
 
 *.zip
 coverage/*
