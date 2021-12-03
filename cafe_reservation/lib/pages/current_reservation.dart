@@ -54,20 +54,20 @@ class CurrentReservationPage extends HookWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                child: IconButton(
-                  onPressed: () {
-                    log('testing');
-                  },
-                  icon: const Icon(Icons.edit, color: Colors.white),
-                  iconSize: 50.0,
-                ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF5EC7F8),
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                ),
-              ),
-              const SizedBox(width: 120.0),
+              // Container(
+              //   child: IconButton(
+              //     onPressed: () {
+              //       log('testing');
+              //     },
+              //     icon: const Icon(Icons.edit, color: Colors.white),
+              //     iconSize: 50.0,
+              //   ),
+              //   decoration: const BoxDecoration(
+              //     color: Color(0xFF5EC7F8),
+              //     borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              //   ),
+              // ),
+              // const SizedBox(width: 120.0),
               Container(
                   child: IconButton(
                     onPressed: () {

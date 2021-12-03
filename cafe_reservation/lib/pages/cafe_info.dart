@@ -24,13 +24,33 @@ class _CafeInfoState extends State<CafeInfo> {
   DateTime _selectedDate = DateTime.now();
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
   int _selectedPeople = 1;
-  String _selectedTime = '0';
+  String _selectedTime = '';
   T.Table? _selectedTable;
+  Reservation? _res;
+  bool _isButtonEnabled = false;
   Map<String, List<T.Table>> _availableTimes = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _getReservation();
+  }
+
+  void _getReservation() async {
+    User user = Provider.of<User>(context, listen: false);
+    Reservation? res = await Database.readReservation(userid: user.uid);
+    log('$res');
+    setState(() {
+      _res = res;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _availableTimes =
         widget.cafe.checkAvailability(_selectedDate, _selectedPeople);
+    _isButtonEnabled =
+        _selectedTime.isNotEmpty && _availableTimes.isNotEmpty && _res == null;
     return CafeInfoTemplate(
       hasBackButton: true,
       imageIdx: widget.imageIdx,
@@ -85,7 +105,7 @@ class _CafeInfoState extends State<CafeInfo> {
         const SizedBox(
           height: 15,
         ),
-        _buildReserveButton(context, widget.cafe),
+        _buildReserveButton(context),
         const SizedBox(height: 100.0),
       ],
     );
@@ -208,6 +228,7 @@ class _CafeInfoState extends State<CafeInfo> {
         setState(() {
           _selectedTable = tables[0];
           _selectedTime = time;
+          // _isButtonEnabled = true;
         });
       },
       style: time == _selectedTime
@@ -224,31 +245,33 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildReserveButton(BuildContext context, Cafe cafe) {
-    var user = Provider.of<User>(context);
-    var f = DateFormat('yyyy-MM-dd');
+  void _handleCreateReserve() {
+    User user = Provider.of<User>(context, listen: false);
+    DateFormat f = DateFormat('yyyy-MM-dd');
+    if (_selectedTime.isNotEmpty && _availableTimes.isNotEmpty) {
+      Reservation newRes = Reservation(
+          user.uid,
+          widget.cafe,
+          [_selectedTable!.tid],
+          _selectedPeople,
+          f.format(_selectedDate),
+          _selectedTime,
+          (int.parse(_selectedTime) + 1).toString());
+      log(newRes.toString());
+      Database.addReservation(res: newRes);
+      Navigator.pop(context);
+    }
+  }
 
+  Widget _buildReserveButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: _selectedTime != '0' && _availableTimes.isNotEmpty
-          ? () {
-              Reservation newRes = Reservation(
-                  user.uid,
-                  cafe,
-                  [_selectedTable!.tid],
-                  _selectedPeople,
-                  f.format(_selectedDate),
-                  _selectedTime,
-                  (int.parse(_selectedTime) + 1).toString());
-              log(newRes.toString());
-              Database.addReservation(res: newRes);
-              Navigator.pop(context);
-            }
-          : null,
+      onPressed:
+          (_isButtonEnabled && _res == null) ? _handleCreateReserve : null,
       child: Container(
         alignment: AlignmentDirectional.center,
-        child: const Text(
-          'Reserve',
-          style: TextStyle(color: Colors.white),
+        child: Text(
+          (_res == null) ? 'Reserve' : 'You already have a reservation',
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -264,6 +287,7 @@ class _CafeInfoState extends State<CafeInfo> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
+        _selectedTime = '';
       });
     }
   }
