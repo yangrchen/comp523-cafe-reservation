@@ -40,7 +40,7 @@ class _CafeListState extends State<CafeList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 320,
       child: StreamBuilder<QuerySnapshot>(
         stream: Database.readCafes(),

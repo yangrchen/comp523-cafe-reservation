@@ -1,6 +1,5 @@
 import 'package:cafe_reservation/models/cafe.dart';
 import 'package:cafe_reservation/models/reservation.dart';
-import 'package:cafe_reservation/models/table.dart' as T;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -22,6 +21,6 @@ void main() {
     Reservation r =
         Reservation(userid, c, ['1', '2'], 3, '2021-11-18', '1', '2');
     expect(r.toString(),
-        'Reservation for user ${userid} with a party of 3 at ${c.name} at 1');
+        'Reservation for user $userid with a party of 3 at ${c.name} at 1');
   });
 }

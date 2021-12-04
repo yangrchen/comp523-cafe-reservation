@@ -55,14 +55,14 @@ class Database {
     };
     Cafe c = res.cafe;
     List<Table> tablesToUpdate = [];
-    c.tables.forEach((table) {
+    for (var table in c.tables) {
       if (res.tables.contains(table.tid)) {
         tablesToUpdate.add(table);
       }
-    });
-    tablesToUpdate.forEach((table) {
+    }
+    for (var table in tablesToUpdate) {
       table.dates[res.date]![res.startTime] = false;
-    });
+    }
     await documentReferencer
         .set(data)
         .whenComplete(() => log("Reservation item added to the database"))
@@ -91,14 +91,14 @@ class Database {
 
     Reservation res = Reservation.fromDoc(snap, cafe);
     List<Table> tablesToUpdate = [];
-    cafe.tables.forEach((table) {
+    for (var table in cafe.tables) {
       if (res.tables.contains(table.tid)) {
         tablesToUpdate.add(table);
       }
-    });
-    tablesToUpdate.forEach((table) {
+    }
+    for (var table in tablesToUpdate) {
       table.dates[res.date]![res.startTime] = true;
-    });
+    }
 
     await currentReservation
         .delete()

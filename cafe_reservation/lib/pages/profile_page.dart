@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cafe_reservation/models/user.dart' as U;
+import 'package:cafe_reservation/models/user.dart' as u;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ class ProfilePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    U.User user = Provider.of<U.User>(context);
+    u.User user = Provider.of<u.User>(context);
     return Container(
       alignment: Alignment.center,
       child: Column(

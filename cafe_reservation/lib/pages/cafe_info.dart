@@ -6,7 +6,7 @@ import 'package:cafe_reservation/models/reservation.dart';
 import 'package:cafe_reservation/models/user.dart';
 import 'package:cafe_reservation/widgets/cafe_info_template.dart';
 import 'package:flutter/material.dart';
-import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:cafe_reservation/models/table.dart' as t;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -25,10 +25,10 @@ class _CafeInfoState extends State<CafeInfo> {
   List<int> numPeopleOptions = List<int>.generate(6, (i) => i + 1);
   int _selectedPeople = 1;
   String _selectedTime = '';
-  T.Table? _selectedTable;
+  t.Table? _selectedTable;
   Reservation? _res;
   bool _isButtonEnabled = false;
-  Map<String, List<T.Table>> _availableTimes = {};
+  Map<String, List<t.Table>> _availableTimes = {};
 
   @override
   void initState() {
@@ -162,7 +162,6 @@ class _CafeInfoState extends State<CafeInfo> {
               {
                 return _selectedPeople;
               }
-              break;
           }
         }()),
         icon: const Icon(Icons.arrow_drop_down),
@@ -191,7 +190,7 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildTimeGrid({required Map<String, List<T.Table>> timemap}) {
+  Widget _buildTimeGrid({required Map<String, List<t.Table>> timemap}) {
     List<String> times = timemap.keys.toList();
     times.sort((a, b) => int.parse(a).compareTo(int.parse(b)));
     return Container(
@@ -212,7 +211,7 @@ class _CafeInfoState extends State<CafeInfo> {
     );
   }
 
-  Widget _buildTimeButton(String time, List<T.Table> tables) {
+  Widget _buildTimeButton(String time, List<t.Table> tables) {
     tables.sort((a, b) => a.size.compareTo(b.size));
     bool isAM = int.parse(time) < 12;
     String timeString = '';

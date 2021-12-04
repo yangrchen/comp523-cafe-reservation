@@ -1,4 +1,4 @@
-import 'package:cafe_reservation/models/table.dart' as T;
+import 'package:cafe_reservation/models/table.dart' as t;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -6,9 +6,9 @@ void main() {
     Map<String, Map<String, bool>> dates = {
       'a': {'b': true}
     };
-    var t = T.Table(5, dates);
-    expect(t.size, 5);
-    expect(t.dates, {
+    var tab = t.Table(5, dates);
+    expect(tab.size, 5);
+    expect(tab.dates, {
       'a': {'b': true}
     });
   });
@@ -19,9 +19,9 @@ void main() {
         'a': {'b': true}
       }
     };
-    var t = T.Table.fromMap(m);
-    expect(t.size, 5);
-    expect(t.dates, {
+    var tab = t.Table.fromMap(m);
+    expect(tab.size, 5);
+    expect(tab.dates, {
       'a': {'b': true}
     });
   });
@@ -29,9 +29,9 @@ void main() {
     Map<String, Map<String, bool>> dates = {
       'a': {'b': true}
     };
-    var t = T.Table(5, dates);
-    var tid = t.tid;
-    expect(t.toMap(), {
+    var tab = t.Table(5, dates);
+    var tid = tab.tid;
+    expect(tab.toMap(), {
       'size': 5,
       'dates': {
         'a': {'b': true}
@@ -43,7 +43,7 @@ void main() {
     Map<String, Map<String, bool>> dates = {
       'a': {'b': true}
     };
-    var t = T.Table(5, dates);
-    expect(t.toString(), 'Table of size 5 with 1 dates.');
+    var tab = t.Table(5, dates);
+    expect(tab.toString(), 'Table of size 5 with 1 dates.');
   });
 }

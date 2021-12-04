@@ -14,7 +14,7 @@ class CafeLargeTile extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
-        Container(
+        SizedBox(
           height: 350,
           width: 230,
           child: Card(

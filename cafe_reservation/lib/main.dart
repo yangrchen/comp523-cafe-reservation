@@ -9,7 +9,7 @@ import 'package:cafe_reservation/pages/login_page.dart';
 import 'package:cafe_reservation/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cafe_reservation/models/user.dart' as U;
+import 'package:cafe_reservation/models/user.dart' as u;
 
 import 'database.dart';
 
@@ -60,8 +60,8 @@ class _AppState extends State<App> {
                   if (snapshot.connectionState == ConnectionState.active) {
                     User? user = snapshot.data as User?;
                     if (user == null) {
-                      return Provider<U.User>(
-                        create: (context) => U.User.blank(),
+                      return Provider<u.User>(
+                        create: (context) => u.User.blank(),
                         child: _buildMaterialApp(isAuthenticated: false),
                       );
                     } else {
@@ -80,8 +80,8 @@ class _AppState extends State<App> {
                               Map<String, dynamic> data =
                                   snapshot.data as Map<String, dynamic>;
                               bool isAdmin = data['isAdmin'] == true;
-                              return Provider<U.User>(
-                                create: (context) => U.User(
+                              return Provider<u.User>(
+                                create: (context) => u.User(
                                   user.uid,
                                   user.email!,
                                   isAdmin,

@@ -1,17 +1,13 @@
-import 'dart:developer';
-
 import 'package:cafe_reservation/database.dart';
 import 'package:cafe_reservation/models/cafe.dart';
-import 'package:cafe_reservation/models/table.dart' as T;
-import 'package:cafe_reservation/models/user.dart' as U;
+import 'package:cafe_reservation/models/table.dart' as t;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class CafeAdmin extends StatefulWidget {
-  Cafe cafe;
-  CafeAdmin({Key? key, required this.cafe}) : super(key: key);
+  final Cafe cafe;
+  const CafeAdmin({Key? key, required this.cafe}) : super(key: key);
 
   @override
   _CafeAdminState createState() => _CafeAdminState();
@@ -37,12 +33,9 @@ class _CafeAdminState extends State<CafeAdmin> {
     return availList;
   }
 
+  @override
   Widget build(BuildContext context) {
-    U.User user = Provider.of<U.User>(context);
-    log(widget.cafe.name);
     Cafe cafe = widget.cafe;
-
-    String title = 'Cafe Admin';
     Map<String, bool> times = {
       '8': true,
       '9': true,
@@ -61,7 +54,7 @@ class _CafeAdminState extends State<CafeAdmin> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cafe Admin'),
+        title: const Text('Cafe Admin'),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -69,7 +62,7 @@ class _CafeAdminState extends State<CafeAdmin> {
         centerTitle: true,
       ),
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: Column(
           children: [
             Container(
@@ -87,16 +80,16 @@ class _CafeAdminState extends State<CafeAdmin> {
                           });
                         },
                         items: [1, 2, 3, 4, 5, 6]
-                            .map((num) => DropdownMenuItem(
-                                  child: Text(num.toString()),
-                                  value: num,
+                            .map((val) => DropdownMenuItem(
+                                  child: Text(val.toString()),
+                                  value: val,
                                 ))
                             .toList(),
                       ),
                       ElevatedButton(
                         child: const Text('Add Table'),
                         onPressed: () {
-                          cafe.tables.add(T.Table(dropdownValue, dates));
+                          cafe.tables.add(t.Table(dropdownValue, dates));
                           Database.updateCafe(cafe: cafe);
                           setState(() {
                             cafe;
@@ -123,7 +116,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                 mainAxisSpacing: 15.0,
                 children: cafe.tables.asMap().entries.map<Widget>((entry) {
                   int idx = entry.key;
-                  T.Table table = entry.value;
+                  t.Table table = entry.value;
                   return Stack(
                     children: [
                       Card(
@@ -131,11 +124,11 @@ class _CafeAdminState extends State<CafeAdmin> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text("Table ${idx}"),
+                            Text("Table $idx"),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.people),
+                                const Icon(Icons.people),
                                 Text(table.size.toString()),
                               ],
                             )
@@ -149,7 +142,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                           onPressed: () => showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
-                              title: Text('Delete Table ${idx}?'),
+                              title: Text('Delete Table $idx?'),
                               content: const Text(
                                   'Deleting this table will delete all of the associated reservations as well!'),
                               actions: <Widget>[
@@ -172,7 +165,7 @@ class _CafeAdminState extends State<CafeAdmin> {
                               ],
                             ),
                           ),
-                          icon: Icon(Icons.remove),
+                          icon: const Icon(Icons.remove),
                         ),
                       ),
                     ],
